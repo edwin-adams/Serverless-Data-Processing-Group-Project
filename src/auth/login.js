@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import firebase, { initializeApp } from 'firebase/app';
 import 'firebase/auth';
+import { initializeApp } from 'firebase/app';
 import { GoogleAuthProvider, getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { Box, Button, FormControl, FormLabel, Heading, Input } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { Link as ChakraLink, Text } from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router-dom';
+
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -29,21 +32,23 @@ const Login = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
+        console.log(e);
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Login successful, do something with the user data
                 console.log(userCredential.user);
             })
             .catch((error) => {
-                // Login error, handle the error
+                console.log(email);
+                console.log(password);
                 console.log(error);
+                alert(error);
             });
     };
 
     const navigate = useNavigate();
 
     const handleClick = () => {
-        // Navigate to the desired page
         navigate('/signup');
     };
 
@@ -79,7 +84,8 @@ const Login = () => {
                 console.log(email);
 
                 console.log(credential);
-                // ...
+
+                alert(errorMessage);
             });
     };
 
@@ -91,11 +97,12 @@ const Login = () => {
                 </Heading>
                 <FormControl id="email" mb="4">
                     <FormLabel>Email</FormLabel>
-                    <Input type="email" />
+                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+
                 </FormControl>
                 <FormControl id="password" mb="4">
                     <FormLabel>Password</FormLabel>
-                    <Input type="password" />
+                    <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </FormControl>
                 <Button colorScheme="blue" onClick={handleLogin} width="100%">
                     Login
@@ -103,32 +110,17 @@ const Login = () => {
                 <Button colorScheme="blue" onClick={handleGoogleLogin}>
                     Log in using Google
                 </Button>
+
+                <Text>
+                    <ChakraLink as={RouterLink} to="/forgot_password">Forgot Password?</ChakraLink>
+                </Text>
+
                 <Button colorScheme="red" onClick={handleClick}>
                     Sign Up
                 </Button>
             </Box>
-            {/* <div>
-                <h2>Login</h2>
-                <form onSubmit={handleLogin}>
-                    <div>
-                        <label>Email:</label>
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    </div>
-                    <div>
-                        <label>Password:</label>
-                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    </div>
-                    <button type="submit">Login</button>
-                </form>
-                </div> */}
-
-
         </>
     );
 };
-
-
-
-
 
 export default Login;

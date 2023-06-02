@@ -5,7 +5,6 @@ import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react';
 
 
-
 const root = ReactDOM.createRoot(
   document.getElementById('root')
 );

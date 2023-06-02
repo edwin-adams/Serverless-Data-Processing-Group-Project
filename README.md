@@ -64,6 +64,8 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 `npm install firebase react-firebase-hooks`
 
 
+`npm install firebase @chakra-ui/react @emotion/react @emotion/styled framer-motion`
+
 
 ## Reference
 https://firebase.google.com/docs/auth/web/start
