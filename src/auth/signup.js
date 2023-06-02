@@ -70,7 +70,3 @@ const Signup = () => {
 };
 
 export default Signup;
-function signInWithPopup(provider) {
-    throw new Error('Function not implemented.');
-}
-
