@@ -10,7 +10,6 @@ cache:
 build-job:
   stage: build
   script:
-    - cd tutorial-2
     - npm install
     - npm run build
     - npm install -g netlify-cli
