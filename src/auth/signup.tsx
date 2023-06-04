@@ -23,11 +23,11 @@ const Signup = () => {
     const navigate = useNavigate();
 
 
-    const handleSignup = async (e) => {
+    const handleSignup = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+            await createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
                 const user = userCredential.user;
                 sendEmailVerification(user)
                     .then(() => {
@@ -41,7 +41,7 @@ const Signup = () => {
                     console.error('Error signing up:', error);
                 });
             // Handle successful signup
-            console.log('User signed up:', userCredential.user);
+            // console.log('User signed up:', userCredential.user);
 
             navigate('/login');
 

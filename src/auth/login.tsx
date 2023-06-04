@@ -30,7 +30,7 @@ const Login = () => {
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const handleLogin = (e) => {
+    const handleLogin = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         console.log(e);
         signInWithEmailAndPassword(auth, email, password)
@@ -53,7 +53,7 @@ const Login = () => {
     };
 
 
-    const handleGoogleLogin = (e) => {
+    const handleGoogleLogin = () => {
         const provider = new GoogleAuthProvider();
         const auth = getAuth();
         signInWithPopup(auth, provider)

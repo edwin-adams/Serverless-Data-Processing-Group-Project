@@ -46,11 +46,6 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 
 
-
-
-
-
-
 ## Dependancy
 
 `npm install firebase`
@@ -62,9 +57,6 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 `npm install firebaseui --save`
 
 `npm install firebase react-firebase-hooks`
-
-
-`npm install firebase @chakra-ui/react @emotion/react @emotion/styled framer-motion`
 
 
 ## Reference
