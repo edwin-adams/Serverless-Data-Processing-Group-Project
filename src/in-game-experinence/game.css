@@ -1,0 +1,12 @@
+.question {
+  font-size: 40px;
+  cursor: pointer;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.card:hover{
+    background-color: #e6e6e6;
+}
