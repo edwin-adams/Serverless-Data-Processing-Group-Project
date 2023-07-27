@@ -1,42 +1,76 @@
-import React, { useState } from 'react';
-import { initializeApp } from 'firebase/app';
-import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import React, {useEffect, useRef, useState} from 'react';
+import {initializeApp} from 'firebase/app';
+import {createUserWithEmailAndPassword, getAuth, sendEmailVerification} from 'firebase/auth';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
+import {Box, Button, FormControl, FormLabel, Heading, Input, Select,} from '@chakra-ui/react';
+import {getDataFromDynamo} from "./service/getQuestionsFromDynamo";
+import {putDataToDynamo} from "./service/storeUserToDynamo";
+import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
 
 const Signup = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAzdpklV8zQ8UJTXTJ65Md9vBpQX5TnH8Q",
-        authDomain: "serverless-5410-388502.firebaseapp.com",
-        projectId: "serverless-5410-388502",
-        storageBucket: "serverless-5410-388502.appspot.com",
-        messagingSenderId: "998159362895",
-        appId: "1:998159362895:web:e7fca9050356604001733a",
-        measurementId: "G-XE225EJ9GV"
-    };
+    const emailRef = useRef<HTMLInputElement | null>(null);
+    const passwordRef = useRef<HTMLInputElement | null>(null);
+    const firstnameRef = useRef<HTMLInputElement | null>(null);
+    const lastnameRef = useRef<HTMLInputElement | null>(null);
+    const q1Ref = useRef<HTMLSelectElement | null>(null);
+    const a1Ref = useRef<HTMLInputElement | null>(null);
+    const q2Ref = useRef<HTMLSelectElement | null>(null);
+    const a2Ref = useRef<HTMLInputElement | null>(null);
+    const q3Ref = useRef<HTMLSelectElement | null>(null);
+    const a3Ref = useRef<HTMLInputElement | null>(null);
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
     const navigate = useNavigate();
 
+    const [questionsFromDynamoDB, setQuestions] = useState<Question[]>([]);
+
+    const [isSignUpUsingSocial, setSocial] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        console.log(searchParams.get('social_account'));
+        setSocial(searchParams.get('social_account') !== null);
+        getDataFromDynamo().then((data) => {
+            console.log("data in signup page from getQuestionsFromDynamo", data);
+            setQuestions(data);
+        });
+    }, [location.search]);
 
     const handleSignup = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
         try {
-            await createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+            await createUserWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value).then((userCredential) => {
+                console.log(userCredential);
+
                 const user = userCredential.user;
-                sendEmailVerification(user)
-                    .then(() => {
-                        console.log('Verification email sent');
-                    })
-                    .catch((error) => {
-                        console.error('Error sending verification email:', error);
-                    });
+                console.log(user);
+                putDataToDynamo({
+                    firebase_user_id: user.uid,
+                    first_name: firstnameRef.current.value,
+                    last_name: lastnameRef.current.value,
+                    question1: q1Ref.current.value,
+                    answer1: a1Ref.current.value,
+                    question2: q2Ref.current.value,
+                    answer2: a2Ref.current.value,
+                    question3: q3Ref.current.value,
+                    answer3: a3Ref.current.value
+                }).then((isDataUpdated) => {
+                    console.log(isDataUpdated);
+                    sendEmailVerification(user)
+                        .then(() => {
+                            console.log('Verification email sent');
+                        })
+                        .catch((error) => {
+                            console.error('Error sending verification email:', error);
+                        });
                 })
+            })
                 .catch((error) => {
                     console.error('Error signing up:', error);
                 });
@@ -50,23 +84,170 @@ const Signup = () => {
             console.error('Signup error:', error);
         }
     };
-
+    const handleGoogleLogin = async () => {
+        const user = await signUpWithGoogle();
+        console.log(user);
+        const userToSave = {
+            firebase_user_id: user.uid,
+            first_name: user.displayName.split(" ")[0].trim(),
+            last_name: user.displayName.split(" ")[1].trim(),
+            question1: q1Ref.current.value,
+            answer1: a1Ref.current.value,
+            question2: q2Ref.current.value,
+            answer2: a2Ref.current.value,
+            question3: q3Ref.current.value,
+            answer3: a3Ref.current.value
+        };
+        putDataToDynamo(userToSave).then((isUserSaved) => {
+            if (isUserSaved) {
+                console.log("Login Success with Social Media account: Google ")
+            } else {
+                console.error("Google login success but user info not saved in dynamodb")
+            }
+        });
+    };
     return (
-        <div>
-            <h2>Sign Up</h2>
-            <form onSubmit={handleSignup}>
-                <div>
-                    <label>Email:</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <button type="submit">Sign Up</button>
-            </form>
-        </div>
+        <>
+            <Box maxW="md" mx="auto" p="4">
+                <Heading mb="4">Sign Up</Heading>
+                <form onSubmit={handleSignup}>
+                    {!isSignUpUsingSocial && <FormControl mb="4">
+                        <FormLabel>Email:</FormLabel>
+                        <Input
+                            type="email"
+                            // value={email}
+                            ref={emailRef}
+                            // onChange={(e) => setEmail(e.target.value)}
+                            variant="outline"
+                            size="md"
+                        />
+                    </FormControl>
+                    }
+                    {!isSignUpUsingSocial &&
+                        <FormControl mb="4">
+                            <FormLabel>Password:</FormLabel>
+                            <Input
+                                type="password"
+                                variant="outline"
+                                size="md"
+                                ref={passwordRef}
+                            />
+                        </FormControl>
+                    }
+                    {!isSignUpUsingSocial &&
+                        <FormControl mb="4">
+                            <FormLabel>First Name:</FormLabel>
+                            <Input
+                                type="text"
+                                ref={firstnameRef}
+                                variant="outline"
+                                size="md"
+                            />
+                        </FormControl>
+                    }
+                    {!isSignUpUsingSocial &&
+                        <FormControl mb="4">
+                            <FormLabel>Last Name:</FormLabel>
+                            <Input
+                                type="text"
+                                ref={lastnameRef}
+                                variant="outline"
+                                size="md"
+                            />
+                        </FormControl>
+                    }
+                    <FormControl mb="4">
+                        <FormLabel>Question 1:</FormLabel>
+                        <Select
+                            ref={q1Ref}
+                            variant="outline"
+                            size="md"
+                        >
+                            {questionsFromDynamoDB.map((option) => (
+                                <option key={option.question} value={option.question}>
+                                    {option.question}
+                                </option>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    <FormControl mb="4">
+                        <FormLabel>Answer 1:</FormLabel>
+                        <Input
+                            type="text"
+                            ref={a1Ref}
+                            variant="outline"
+                            size="md"
+                        />
+                    </FormControl>
+                    <FormControl mb="4">
+                        <FormLabel>Question 2:</FormLabel>
+                        <Select
+                            ref={q2Ref}
+                            variant="outline"
+                            size="md"
+                        >
+                            {questionsFromDynamoDB.map((option) => (
+                                <option key={option.question} value={option.question}>
+                                    {option.question}
+                                </option>
+                            ))}
+                        </Select>
+
+                    </FormControl>
+                    <FormControl mb="4">
+                        <FormLabel>Answer 2:</FormLabel>
+                        <Input
+                            type="text"
+                            ref={a2Ref}
+                            variant="outline"
+                            size="md"
+                        />
+                    </FormControl>
+                    <FormControl mb="4">
+                        <FormLabel>Question 3:</FormLabel>
+                        <Select
+                            ref={q3Ref}
+                            variant="outline"
+                            size="md"
+                        >
+                            {questionsFromDynamoDB.map((option) => (
+                                <option key={option.question} value={option.question}>
+                                    {option.question}
+                                </option>
+                            ))}
+                        </Select>
+
+                    </FormControl>
+                    <FormControl mb="4">
+                        <FormLabel>Answer 3:</FormLabel>
+                        <Input
+                            type="text"
+                            ref={a3Ref}
+                            variant="outline"
+                            size="md"
+                        />
+                    </FormControl>
+                    {!isSignUpUsingSocial &&
+                        <Button type="submit" colorScheme="blue" mr="4">
+                            Sign Up
+                        </Button>
+                    }
+                    {isSignUpUsingSocial &&
+                        <Button colorScheme="blue" onClick={handleGoogleLogin}>
+                            Sign up using Google
+                        </Button>
+                    }
+                </form>
+            </Box>
+
+        </>
     );
 };
 
 export default Signup;
+
+
+interface Question {
+    question: string;
+}
