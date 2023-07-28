@@ -8,19 +8,20 @@ image: node:latest
 stages:
   - build
   - deploy
-
 cache:
   paths:
     - node_modules/
 
 build:
   stage: build
+  image: google/cloud-sdk:latest
   script:
     - docker build -t ${IMAGE_NAME}  .
     - docker push ${IMAGE_NAME}
 
 deploy:
   stage: deploy
+  image: google/cloud-sdk:latest
   script:
     - gcloud run deploy ${SERVICE_NAME} \
       --image ${IMAGE_NAME} \
