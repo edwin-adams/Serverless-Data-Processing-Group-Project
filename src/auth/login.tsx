@@ -55,6 +55,16 @@ const Login = () => {
     const handleGoogleLogin = async () => {
         const user = await signUpWithGoogle();
         console.log(user);
+        const userFromDynamo = await fetchUserByIdDynamo(user.uid);
+        console.log(userFromDynamo);
+        if (userFromDynamo === undefined) {
+            alert('Sign Up using Google first');
+        } else {
+            const ques = [userFromDynamo.question1, userFromDynamo.question2, userFromDynamo.question3];
+            setQuestions(ques);
+            setLoggedInUserId(user.uid);
+            setIsModalOpen(true);
+        }
     };
 
 

@@ -13,7 +13,7 @@ const AppRouter = () => {
         <Router>
             <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
-                    <Route path="/login" Component={Login}/>
+                    <Route path="/" Component={Login}/>
                     <Route path="/signup" Component={SignUp}/>
                     <Route path='/forgot_password' Component={PasswordReset}/>
                     <Route path='/dashboard' Component={Dashboard}/>
