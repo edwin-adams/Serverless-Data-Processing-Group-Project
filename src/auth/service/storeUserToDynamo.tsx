@@ -15,6 +15,7 @@ interface DataItem {
     answer2: string;
     question3: string;
     answer3: string;
+    email: string;
 }
 
 export const putDataToDynamo = async (item: DataItem) => {

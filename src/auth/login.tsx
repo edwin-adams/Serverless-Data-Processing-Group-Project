@@ -6,21 +6,39 @@ import {Box, Button, FormControl, FormLabel, Heading, Input, Link as ChakraLink,
 import {Link as RouterLink} from 'react-router-dom';
 import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
 import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
+import fetchUserByIdDynamo from "./service/fetchUserByIdDynamo";
+import {QuestionModal} from "./SecurityQuestionModal";
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const handleLogin = (e: { preventDefault: () => void; }) => {
+    const [questions, setQuestions] = useState([]);
+
+    const [loggedInUserId, setLoggedInUserId] = useState('');
+
+    const handleLogin = (e: {
+        preventDefault: () => void;
+    }) => {
         e.preventDefault();
         console.log(e);
         signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Login successful, do something with the user data
+            .then(async (userCredential) => {
                 console.log(userCredential.user);
+                if (userCredential.user.emailVerified) {
+                    const userFromDynamo = await fetchUserByIdDynamo(userCredential.user.uid);
+                    console.log(userFromDynamo);
+                    const ques = [userFromDynamo.question1, userFromDynamo.question2, userFromDynamo.question3];
+                    setQuestions(ques);
+                    setLoggedInUserId(userCredential.user.uid);
+                    setIsModalOpen(true);
+                } else {
+                    alert('Verify your mail. You must have receive a mail with a subject: Verify your email for serverless 5410');
+                }
             })
             .catch((error) => {
                 console.log(email);
@@ -30,11 +48,15 @@ const Login = () => {
             });
     };
 
+    const handleModalToggle = () => {
+        setIsModalOpen(!isModalOpen);
+    };
 
     const handleGoogleLogin = async () => {
         const user = await signUpWithGoogle();
         console.log(user);
     };
+
 
     return (
         <>
@@ -50,14 +72,15 @@ const Login = () => {
                     <FormLabel>Password</FormLabel>
                     <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                 </FormControl>
-                <Box display="flex" justifyContent="flex-end" mb="6">
+                <Box display="flex" justifyContent="flex-end" mb="4">
                     <Text>
                         <ChakraLink as={RouterLink} to="/forgot_password">
                             Forgot Password?
                         </ChakraLink>
                     </Text>
                 </Box>
-                <Button colorScheme="blue" onClick={handleLogin} width="100%" mb="4">
+
+                <Button colorScheme="blue" onClick={handleLogin} width="100%" mt="2" mb="4">
                     Login
                 </Button>
                 <Button colorScheme="blue" onClick={handleGoogleLogin} width="100%" mb="8">
@@ -72,6 +95,12 @@ const Login = () => {
                     Sign Up using Google
                 </Button>
             </Box>
+            <QuestionModal
+                isModalOpen={isModalOpen}
+                handleModalToggle={handleModalToggle}
+                questions={questions}
+                loggedInUserId={loggedInUserId}
+            />
         </>
     );
 };

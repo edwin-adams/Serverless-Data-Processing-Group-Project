@@ -59,7 +59,8 @@ const Signup = () => {
                     question2: q2Ref.current.value,
                     answer2: a2Ref.current.value,
                     question3: q3Ref.current.value,
-                    answer3: a3Ref.current.value
+                    answer3: a3Ref.current.value,
+                    email: emailRef.current.value
                 }).then((isDataUpdated) => {
                     console.log(isDataUpdated);
                     sendEmailVerification(user)
@@ -84,6 +85,8 @@ const Signup = () => {
             console.error('Signup error:', error);
         }
     };
+
+
     const handleGoogleLogin = async () => {
         const user = await signUpWithGoogle();
         console.log(user);
@@ -96,7 +99,8 @@ const Signup = () => {
             question2: q2Ref.current.value,
             answer2: a2Ref.current.value,
             question3: q3Ref.current.value,
-            answer3: a3Ref.current.value
+            answer3: a3Ref.current.value,
+            email: user.email
         };
         putDataToDynamo(userToSave).then((isUserSaved) => {
             if (isUserSaved) {
