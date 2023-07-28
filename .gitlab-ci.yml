@@ -16,6 +16,7 @@ build:
   stage: build
   image: google/cloud-sdk:latest
   script:
+    - systemctl start docker
     - docker build -t ${IMAGE_NAME}  .
     - docker push ${IMAGE_NAME}
 
