@@ -1,24 +1,13 @@
 import {AWSConfig, userTableName} from "../../CloudConfig/getAWSConfig";
 import AWS from "aws-sdk";
+import {UserModel} from "../user.model";
 
 AWS.config.update(AWSConfig);
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
-interface DataItem {
-    firebase_user_id: string;
-    first_name: string;
-    last_name: string;
-    question1: string;
-    answer1: string;
-    question2: string;
-    answer2: string;
-    question3: string;
-    answer3: string;
-    email: string;
-}
 
-export const putDataToDynamo = async (item: DataItem) => {
+export const putDataToDynamo = async (item: UserModel) => {
     console.log("Adding Item to Dynamo DB table:", userTableName, item);
     const params = {
         TableName: userTableName,

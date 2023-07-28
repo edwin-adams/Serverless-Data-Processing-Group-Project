@@ -7,6 +7,7 @@ const Login = lazy(() => import('./auth/login'));
 const SignUp = lazy(() => import('./auth/signup'));
 const PasswordReset = lazy(() => import('./auth/PasswordReset'));
 const Dashboard = lazy(() => import('./auth/Dashboard'));
+const EditUser = lazy(() => import('./auth/EditUser'));
 
 const AppRouter = () => {
     return (
@@ -17,6 +18,7 @@ const AppRouter = () => {
                     <Route path="/signup" Component={SignUp}/>
                     <Route path='/forgot_password' Component={PasswordReset}/>
                     <Route path='/dashboard' Component={Dashboard}/>
+                    <Route path='/editUser' Component={EditUser}/>
                 </Routes>
             </Suspense>
         </Router>
