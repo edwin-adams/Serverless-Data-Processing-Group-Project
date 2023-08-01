@@ -1,9 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {Box, Button, FormControl, FormLabel, Input, Text, VStack,} from '@chakra-ui/react';
-import {updateUserDetails} from "./service/UpdateUserDetails";
 import {UserModel} from "./user.model";
+import {patchData} from "./service/RestCall";
+import {useNavigate} from "react-router-dom";
 
 const UserEditPage = () => {
+
+    const patchUserDetailsURL = 'https://4ipyn6vwh6.execute-api.us-east-1.amazonaws.com/prod';
+
     // Sample user data
     const [userData, setUserData] = useState({
         userId: '12345',
@@ -29,6 +33,10 @@ const UserEditPage = () => {
     const [firstName, setFirstName] = useState(userData.firstName);
     const [lastName, setLastName] = useState(userData.lastName);
 
+
+    const navigate = useNavigate();
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setUser({...user, firstName, lastName});
@@ -37,7 +45,7 @@ const UserEditPage = () => {
             firebase_user_id: JSON.parse(localStorage.getItem('user')).user_id,
             first_name: firstName,
             last_name: lastName,
-            email: '',
+            email: JSON.parse(localStorage.getItem('user')).email,
             question1: '',
             question2: '',
             question3: '',
@@ -46,8 +54,12 @@ const UserEditPage = () => {
             answer3: ''
         };
 
-        const updatedUser = await updateUserDetails(newUser);
+        const updatedUser = await patchData(patchUserDetailsURL, newUser);//updateUserDetails(newUser);
         console.log(updatedUser);
+        updatedUser['userId'] = updatedUser['firebase_user_id'];
+        delete updatedUser.firebase_user_id;
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        navigate('/dashboard');
     };
 
     useEffect(() => {

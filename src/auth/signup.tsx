@@ -81,7 +81,6 @@ const Signup = () => {
                     console.error('Error signing up:', error);
                 }).finally(() => {
                     navigate('/');
-
                 });
         } catch (error) {
             console.error('Signup error:', error);

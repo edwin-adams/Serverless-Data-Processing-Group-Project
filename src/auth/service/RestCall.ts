@@ -31,30 +31,28 @@ async function postData(apiUrl: string, payload: any) {
     }
 }
 
-async function patchData(apiUrl: string, id: number, payload: any) {
+async function patchData(apiUrl: string, payload: any) {
     try {
-        const response = await fetch(`${apiUrl}/${id}`, {
+        const response = await fetch(`${apiUrl}`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(payload),
         });
+        console.log(response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        const data = await response.json();
+        const data = (await response.json())['user'];
         return data;
     } catch (error) {
         throw error;
     }
 }
 
-async function deleteData(apiUrl: string, id: number) {
+async function deleteData(apiUrl: string, payload: string) {
     try {
-        const response = await fetch(`${apiUrl}/${id}`, {
+        const response = await fetch(`${apiUrl}`, {
             method: 'DELETE',
-            mode: 'no-cors',
+            body: JSON.stringify(payload),
         });
         if (!response.ok) {
             throw new Error('Network response was not ok');
