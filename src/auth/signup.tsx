@@ -6,13 +6,15 @@ import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
 import {Box, Button, FormControl, FormLabel, Heading, Input, Select,} from '@chakra-ui/react';
 import {putDataToDynamo} from "./service/storeUserToDynamo";
 import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
-import {fetchData, putData} from "./service/RestCall";
+import {fetchData, postData, putData} from "./service/RestCall";
 
 const GET_getQuestionsFromDynamo = 'https://30quej290j.execute-api.us-east-1.amazonaws.com/prod';
 
 const Signup = () => {
 
     const PUT_storeUserToDynamoDB: string = 'https://csxvr7woxf.execute-api.us-east-1.amazonaws.com/prod';
+    const POST_KhushiSNSNotificationURL = 'https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/sendSubscriptions';
+
 
     const emailRef = useRef<HTMLInputElement | null>(null);
     const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -45,6 +47,15 @@ const Signup = () => {
         });
     }, []);
 
+
+    const sendSNSNotificationOnUserRegistration = async (email: string) => {
+        const payload = {"email": email};
+        console.log(payload);
+        postData(POST_KhushiSNSNotificationURL, payload).then((res) => {
+            console.log(res.statusCode, res.body);
+        });
+    }
+
     const handleSignup = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
@@ -54,6 +65,8 @@ const Signup = () => {
 
                 const user = userCredential.user;
                 console.log(user);
+
+                const user_email = emailRef.current.value;
                 const payload = {
                     firebase_user_id: user.uid,
                     first_name: firstnameRef.current.value,
@@ -70,7 +83,8 @@ const Signup = () => {
                     console.log(isDataUpdated);
                     sendEmailVerification(user)
                         .then(() => {
-                            console.log('Verification email sent');
+                            console.log('Email verification email sent');
+                            sendSNSNotificationOnUserRegistration(user_email);
                         })
                         .catch((error) => {
                             console.error('Error sending verification email:', error);
