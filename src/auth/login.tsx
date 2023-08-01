@@ -6,8 +6,11 @@ import {Box, Button, FormControl, FormLabel, Heading, Input, Link as ChakraLink,
 import {Link as RouterLink} from 'react-router-dom';
 import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
 import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
-import fetchUserByIdDynamo from "./service/fetchUserByIdDynamo";
 import {QuestionModal} from "./SecurityQuestionModal";
+import {postData} from "./service/RestCall";
+
+
+const POST_fetchQuesFirstNameLastNameByUserID: string = 'https://v8vwn4gos0.execute-api.us-east-1.amazonaws.com/prod';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -30,7 +33,8 @@ const Login = () => {
             .then(async (userCredential) => {
                 console.log(userCredential.user);
                 if (userCredential.user.emailVerified) {
-                    const userFromDynamo = await fetchUserByIdDynamo(userCredential.user.uid);
+                    const payload = {"user_id": userCredential.user.uid};
+                    const userFromDynamo = await postData(POST_fetchQuesFirstNameLastNameByUserID, payload);
                     console.log(userFromDynamo);
                     const ques = [userFromDynamo.question1, userFromDynamo.question2, userFromDynamo.question3];
                     setQuestions(ques);
@@ -55,7 +59,8 @@ const Login = () => {
     const handleGoogleLogin = async () => {
         const user = await signUpWithGoogle();
         console.log(user);
-        const userFromDynamo = await fetchUserByIdDynamo(user.uid);
+        const payload = {"user_id": user.uid};
+        const userFromDynamo = await postData(POST_fetchQuesFirstNameLastNameByUserID, payload);
         console.log(userFromDynamo);
         if (userFromDynamo === undefined) {
             alert('Sign Up using Google first');

@@ -20,7 +20,7 @@ const UserEditPage = () => {
         userData.lastName = LoggedInUser.last_name;
         console.log(userData);
         setUserData(userData);
-    }, []);
+    }, [userData]);
 
     // State to store user details
     const [user, setUser] = useState(userData);

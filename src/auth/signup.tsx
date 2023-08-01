@@ -4,11 +4,15 @@ import {createUserWithEmailAndPassword, getAuth, sendEmailVerification} from 'fi
 import {useLocation, useNavigate} from 'react-router-dom';
 import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
 import {Box, Button, FormControl, FormLabel, Heading, Input, Select,} from '@chakra-ui/react';
-import {getDataFromDynamo} from "./service/getQuestionsFromDynamo";
 import {putDataToDynamo} from "./service/storeUserToDynamo";
 import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
+import {fetchData, putData} from "./service/RestCall";
+
+const GET_getQuestionsFromDynamo = 'https://30quej290j.execute-api.us-east-1.amazonaws.com/prod';
 
 const Signup = () => {
+
+    const PUT_storeUserToDynamoDB: string = 'https://csxvr7woxf.execute-api.us-east-1.amazonaws.com/prod';
 
     const emailRef = useRef<HTMLInputElement | null>(null);
     const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -26,7 +30,7 @@ const Signup = () => {
 
     const navigate = useNavigate();
 
-    const [questionsFromDynamoDB, setQuestions] = useState<Question[]>([]);
+    const [questionsFromDynamoDB, setQuestions] = useState<string[]>([]);
 
     const [isSignUpUsingSocial, setSocial] = useState(false);
     const location = useLocation();
@@ -35,11 +39,11 @@ const Signup = () => {
         const searchParams = new URLSearchParams(location.search);
         console.log(searchParams.get('social_account'));
         setSocial(searchParams.get('social_account') !== null);
-        getDataFromDynamo().then((data) => {
-            console.log("data in signup page from getQuestionsFromDynamo", data);
+        fetchData(GET_getQuestionsFromDynamo).then((data) => {
+            data = JSON.parse(data['body']);
             setQuestions(data);
         });
-    }, [location.search]);
+    }, []);
 
     const handleSignup = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -50,7 +54,7 @@ const Signup = () => {
 
                 const user = userCredential.user;
                 console.log(user);
-                putDataToDynamo({
+                const payload = {
                     firebase_user_id: user.uid,
                     first_name: firstnameRef.current.value,
                     last_name: lastnameRef.current.value,
@@ -61,7 +65,8 @@ const Signup = () => {
                     question3: q3Ref.current.value,
                     answer3: a3Ref.current.value,
                     email: emailRef.current.value
-                }).then((isDataUpdated) => {
+                };
+                putData(PUT_storeUserToDynamoDB, payload).then((isDataUpdated) => {
                     console.log(isDataUpdated);
                     sendEmailVerification(user)
                         .then(() => {
@@ -74,14 +79,11 @@ const Signup = () => {
             })
                 .catch((error) => {
                     console.error('Error signing up:', error);
+                }).finally(() => {
+                    navigate('/');
+
                 });
-            // Handle successful signup
-            // console.log('User signed up:', userCredential.user);
-
-            navigate('/login');
-
         } catch (error) {
-            // Handle signup error
             console.error('Signup error:', error);
         }
     };
@@ -168,8 +170,8 @@ const Signup = () => {
                             size="md"
                         >
                             {questionsFromDynamoDB.map((option) => (
-                                <option key={option.question} value={option.question}>
-                                    {option.question}
+                                <option key={option} value={option}>
+                                    {option}
                                 </option>
                             ))}
                         </Select>
@@ -192,8 +194,8 @@ const Signup = () => {
                             size="md"
                         >
                             {questionsFromDynamoDB.map((option) => (
-                                <option key={option.question} value={option.question}>
-                                    {option.question}
+                                <option key={option} value={option}>
+                                    {option}
                                 </option>
                             ))}
                         </Select>
@@ -215,9 +217,9 @@ const Signup = () => {
                             variant="outline"
                             size="md"
                         >
-                            {questionsFromDynamoDB.map((option) => (
-                                <option key={option.question} value={option.question}>
-                                    {option.question}
+                            {questionsFromDynamoDB.map((option, index) => (
+                                <option key={option} value={option}>
+                                    {option}
                                 </option>
                             ))}
                         </Select>
@@ -250,8 +252,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
-
-interface Question {
-    question: string;
-}
