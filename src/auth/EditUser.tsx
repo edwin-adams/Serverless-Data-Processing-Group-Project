@@ -54,7 +54,7 @@ const UserEditPage = () => {
             answer3: ''
         };
 
-        const updatedUser = await patchData(patchUserDetailsURL, newUser);//updateUserDetails(newUser);
+        const updatedUser = await patchData(patchUserDetailsURL, newUser);
         console.log(updatedUser);
         updatedUser['userId'] = updatedUser['firebase_user_id'];
         delete updatedUser.firebase_user_id;
