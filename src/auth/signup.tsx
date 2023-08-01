@@ -4,7 +4,6 @@ import {createUserWithEmailAndPassword, getAuth, sendEmailVerification} from 'fi
 import {useLocation, useNavigate} from 'react-router-dom';
 import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
 import {Box, Button, FormControl, FormLabel, Heading, Input, Select,} from '@chakra-ui/react';
-import {putDataToDynamo} from "./service/storeUserToDynamo";
 import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
 import {fetchData, postData, putData} from "./service/RestCall";
 
@@ -102,7 +101,7 @@ const Signup = () => {
     };
 
 
-    const handleGoogleLogin = async () => {
+    const handleGoogleSignUp = async () => {
         const user = await signUpWithGoogle();
         console.log(user);
         const userToSave = {
@@ -117,9 +116,10 @@ const Signup = () => {
             answer3: a3Ref.current.value,
             email: user.email
         };
-        putDataToDynamo(userToSave).then((isUserSaved) => {
+        putData(PUT_storeUserToDynamoDB, userToSave).then((isUserSaved) => {
             if (isUserSaved) {
-                console.log("Login Success with Social Media account: Google ")
+                console.log("Login Success with Social Media account: Google ");
+                sendSNSNotificationOnUserRegistration(user.email);
             } else {
                 console.error("Google login success but user info not saved in dynamodb")
             }
@@ -253,7 +253,7 @@ const Signup = () => {
                         </Button>
                     }
                     {isSignUpUsingSocial &&
-                        <Button colorScheme="blue" onClick={handleGoogleLogin}>
+                        <Button colorScheme="blue" onClick={handleGoogleSignUp}>
                             Sign up using Google
                         </Button>
                     }
