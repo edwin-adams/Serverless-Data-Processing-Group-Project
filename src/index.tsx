@@ -3,6 +3,12 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";
+import Kommunicate from "@kommunicate/kommunicate-chatbot-plugin";
+
+Kommunicate.init("6cc61b66203b8085147ad5c4b6be383", {
+  automaticChatOpenOnNavigation: true,
+  popupWidget: true,
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
