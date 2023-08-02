@@ -1,19 +1,21 @@
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
-import {Button} from "@chakra-ui/react";
+import {Avatar, Box, Button} from "@chakra-ui/react";
 import GameStats, {GameData} from "./GameStates";
 import {fetchData} from "./service/RestCall";
-import {UserModel} from "./user.model";
 
 const Dashboard = () => {
-    const [loggedUser, setLoggedUser] = useState<UserModel>();
     const [gameData, setGameData] = useState<GameData | null>(null);
+    const [imageUrl, setImageUrl] = useState('');
+
+    const [loggedUser, setLoggedUser] = useState(JSON.parse(localStorage.getItem('user')));
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const GET_userStates = 'https://ca9bktl3k6.execute-api.us-east-1.amazonaws.com/prod?user_id=' + user.user_id;
+        setLoggedUser(JSON.parse(localStorage.getItem('user')));
+        console.log(loggedUser);
+        setImageUrl(loggedUser.image_url);
+        const GET_userStates = 'https://ca9bktl3k6.execute-api.us-east-1.amazonaws.com/prod?user_id=' + loggedUser.user_id;
         console.log(GET_userStates);
-        setLoggedUser(user);
         fetchData(GET_userStates)
             .then((data) => {
                     console.log(data);
@@ -28,6 +30,9 @@ const Dashboard = () => {
             Logged in {loggedUser.email}
             <br/>
             Hi {loggedUser.first_name} {loggedUser.last_name}
+            <Box textAlign="left" mt={2} mb={2}>
+                <Avatar size="md" src={imageUrl}/>
+            </Box>
             <div>
                 <Link to="/edituser">
                     <Button colorScheme="blue">Update Profile</Button>
