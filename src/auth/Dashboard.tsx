@@ -14,15 +14,21 @@ const Dashboard = () => {
         setLoggedUser(JSON.parse(localStorage.getItem('user')));
         console.log(loggedUser);
         setImageUrl(loggedUser.image_url);
-        const GET_userStates = 'https://ca9bktl3k6.execute-api.us-east-1.amazonaws.com/prod?user_id=' + loggedUser.user_id;
-        console.log(GET_userStates);
-        fetchData(GET_userStates)
-            .then((data) => {
-                    console.log(data);
-                    setGameData(data);
-                }
-            )
-            .catch((error) => console.error(error));
+        // const GET_userStates = 'https://ca9bktl3k6.execute-api.us-east-1.amazonaws.com/prod?user_id=' + loggedUser.user_id;
+        const GET_mohituserdata = 'https://rv7nzfzjhc.execute-api.ca-central-1.amazonaws.com/Prod/getScore?userId=' + 'user_5'; // loggedUser.user_id
+
+        // console.log(GET_userStates);
+        // fetchData(GET_userStates)
+        //     .then((data) => {
+        //             console.log(data);
+        //             setGameData(data);
+        //         }
+        //     )
+        //     .catch((error) => console.error(error));
+        fetchData(GET_mohituserdata).then((res) => {
+            console.log(res);
+            // setGameData(data);
+        })
     }, []);
 
     return (
