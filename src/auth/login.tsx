@@ -1,42 +1,49 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import 'firebase/auth';
-import { initializeApp } from 'firebase/app';
-import { GoogleAuthProvider, getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { Box, Button, FormControl, FormLabel, Heading, Input } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import { Link as ChakraLink, Text } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import {initializeApp} from 'firebase/app';
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import {Box, Button, FormControl, FormLabel, Heading, Input, Link as ChakraLink, Text} from '@chakra-ui/react';
+import {Link as RouterLink} from 'react-router-dom';
+import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
+import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
+import {QuestionModal} from "./SecurityQuestionModal";
+import {postData} from "./service/RestCall";
+import {signInWithFacebook} from "./service/signInAndSignUpusingFacebook";
 
+
+const POST_fetchQuesFirstNameLastNameByUserID: string = 'https://v8vwn4gos0.execute-api.us-east-1.amazonaws.com/prod';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-        apiKey: "AIzaSyAzdpklV8zQ8UJTXTJ65Md9vBpQX5TnH8Q",
-        authDomain: "serverless-5410-388502.firebaseapp.com",
-        projectId: "serverless-5410-388502",
-        storageBucket: "serverless-5410-388502.appspot.com",
-        messagingSenderId: "998159362895",
-        appId: "1:998159362895:web:e7fca9050356604001733a",
-        measurementId: "G-XE225EJ9GV"
-    };
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const handleLogin = (e: { preventDefault: () => void; }) => {
+    const [questions, setQuestions] = useState([]);
+
+    const [loggedInUserId, setLoggedInUserId] = useState('');
+
+    const handleLogin = (e: {
+        preventDefault: () => void;
+    }) => {
         e.preventDefault();
         console.log(e);
         signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Login successful, do something with the user data
+            .then(async (userCredential) => {
                 console.log(userCredential.user);
+                if (userCredential.user.emailVerified) {
+                    const payload = {"user_id": userCredential.user.uid};
+                    const userFromDynamo = await postData(POST_fetchQuesFirstNameLastNameByUserID, payload);
+                    console.log(userFromDynamo);
+                    const ques = [userFromDynamo.question1, userFromDynamo.question2, userFromDynamo.question3];
+                    setQuestions(ques);
+                    setLoggedInUserId(userCredential.user.uid);
+                    setIsModalOpen(true);
+                } else {
+                    alert('Verify your mail. You must have receive a mail with a subject: Verify your email for serverless 5410');
+                }
             })
             .catch((error) => {
                 console.log(email);
@@ -46,48 +53,42 @@ const Login = () => {
             });
     };
 
-    const navigate = useNavigate();
-
-    const handleClick = () => {
-        navigate('/signup');
+    const handleModalToggle = () => {
+        setIsModalOpen(!isModalOpen);
     };
 
-
-    const handleGoogleLogin = () => {
-        const provider = new GoogleAuthProvider();
-        const auth = getAuth();
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                // This gives you a Google Access Token. You can use it to access the Google API.
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                const token = credential?.accessToken;
-                // The signed-in user info.
-                const user = result.user;
-                // IdP data available using getAdditionalUserInfo(result)
-                // ...
-
-                console.log(token);
-                console.log(user);
-            }).catch((error) => {
-                // Handle Errors here.
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                // The email of the user's account used.
-                const email = error.customData.email;
-                // The AuthCredential type that was used.
-                const credential = GoogleAuthProvider.credentialFromError(error);
-
-                console.log(errorCode);
-
-                console.log(errorMessage);
-
-                console.log(email);
-
-                console.log(credential);
-
-                alert(errorMessage);
-            });
+    const handleGoogleLogin = async () => {
+        const user = await signUpWithGoogle();
+        console.log(user);
+        const payload = {"user_id": user.uid};
+        const userFromDynamo = await postData(POST_fetchQuesFirstNameLastNameByUserID, payload);
+        console.log(userFromDynamo);
+        if (userFromDynamo === undefined) {
+            alert('Sign Up using Google first');
+        } else {
+            const ques = [userFromDynamo.question1, userFromDynamo.question2, userFromDynamo.question3];
+            setQuestions(ques);
+            setLoggedInUserId(user.uid);
+            setIsModalOpen(true);
+        }
     };
+
+    const handleFacebookLogin = async () => {
+        const user = await signInWithFacebook();
+        console.log(user);
+        const payload = {"user_id": user.uid};
+        const userFromDynamo = await postData(POST_fetchQuesFirstNameLastNameByUserID, payload);
+        console.log(userFromDynamo);
+        if (userFromDynamo === undefined) {
+            alert('Sign Up using Facebook first');
+        } else {
+            const ques = [userFromDynamo.question1, userFromDynamo.question2, userFromDynamo.question3];
+            setQuestions(ques);
+            setLoggedInUserId(user.uid);
+            setIsModalOpen(true);
+        }
+    };
+
 
     return (
         <>
@@ -97,28 +98,48 @@ const Login = () => {
                 </Heading>
                 <FormControl id="email" mb="4">
                     <FormLabel>Email</FormLabel>
-                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-
+                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                 </FormControl>
-                <FormControl id="password" mb="4">
+                <FormControl id="password" mb="2">
                     <FormLabel>Password</FormLabel>
-                    <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                 </FormControl>
-                <Button colorScheme="blue" onClick={handleLogin} width="100%">
+                <Box display="flex" justifyContent="flex-end" mb="4">
+                    <Text>
+                        <ChakraLink as={RouterLink} to="/forgot_password">
+                            Forgot Password?
+                        </ChakraLink>
+                    </Text>
+                </Box>
+
+                <Button colorScheme="blue" onClick={handleLogin} width="100%" mt="2" mb="4">
                     Login
                 </Button>
-                <Button colorScheme="blue" onClick={handleGoogleLogin}>
+                <Button colorScheme="blue" onClick={handleGoogleLogin} width="100%" mb="4">
                     Log in using Google
                 </Button>
+                <Button colorScheme="blue" onClick={handleFacebookLogin} width="100%" mb="8">
+                    Log in using Facebook
+                </Button>
 
-                <Text>
-                    <ChakraLink as={RouterLink} to="/forgot_password">Forgot Password?</ChakraLink>
-                </Text>
-
-                <Button colorScheme="red" onClick={handleClick}>
+                <Button as={RouterLink} to="/signup" colorScheme="red" width="100%" mb="4">
                     Sign Up
                 </Button>
+
+                <Button as={RouterLink} to="/signup?social_account=google" colorScheme="red" width="100%" mb="4">
+                    Sign Up using Google
+                </Button>
+
+                <Button as={RouterLink} to="/signup?social_account=facebook" colorScheme="red" width="100%">
+                    Sign Up using Facebook
+                </Button>
             </Box>
+            <QuestionModal
+                isModalOpen={isModalOpen}
+                handleModalToggle={handleModalToggle}
+                questions={questions}
+                loggedInUserId={loggedInUserId}
+            />
         </>
     );
 };
