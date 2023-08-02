@@ -8,7 +8,6 @@ import Leaderboard from './leaderboard/leaderboard';
 const Login = lazy(() => import('./auth/login'));
 const SignUp = lazy(() => import('./auth/signup'));
 const PasswordReset = lazy(() => import('./auth/PasswordReset'));
-const Dashboard = lazy(() => import('./in-game-experinence/dashboard'));
 const Game = lazy(() => import('./in-game-experinence/game'));
 const Dashboard = lazy(() => import('./auth/Dashboard'));
 const EditUser = lazy(() => import('./auth/EditUser'));
