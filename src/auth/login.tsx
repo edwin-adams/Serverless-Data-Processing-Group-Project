@@ -8,6 +8,7 @@ import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
 import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
 import {QuestionModal} from "./SecurityQuestionModal";
 import {postData} from "./service/RestCall";
+import {signInWithFacebook} from "./service/signInAndSignUpusingFacebook";
 
 
 const POST_fetchQuesFirstNameLastNameByUserID: string = 'https://v8vwn4gos0.execute-api.us-east-1.amazonaws.com/prod';
@@ -72,6 +73,22 @@ const Login = () => {
         }
     };
 
+    const handleFacebookLogin = async () => {
+        const user = await signInWithFacebook();
+        console.log(user);
+        const payload = {"user_id": user.uid};
+        const userFromDynamo = await postData(POST_fetchQuesFirstNameLastNameByUserID, payload);
+        console.log(userFromDynamo);
+        if (userFromDynamo === undefined) {
+            alert('Sign Up using Facebook first');
+        } else {
+            const ques = [userFromDynamo.question1, userFromDynamo.question2, userFromDynamo.question3];
+            setQuestions(ques);
+            setLoggedInUserId(user.uid);
+            setIsModalOpen(true);
+        }
+    };
+
 
     return (
         <>
@@ -98,16 +115,23 @@ const Login = () => {
                 <Button colorScheme="blue" onClick={handleLogin} width="100%" mt="2" mb="4">
                     Login
                 </Button>
-                <Button colorScheme="blue" onClick={handleGoogleLogin} width="100%" mb="8">
+                <Button colorScheme="blue" onClick={handleGoogleLogin} width="100%" mb="4">
                     Log in using Google
+                </Button>
+                <Button colorScheme="blue" onClick={handleFacebookLogin} width="100%" mb="8">
+                    Log in using Facebook
                 </Button>
 
                 <Button as={RouterLink} to="/signup" colorScheme="red" width="100%" mb="4">
                     Sign Up
                 </Button>
 
-                <Button as={RouterLink} to="/signup?social_account=google" colorScheme="red" width="100%">
+                <Button as={RouterLink} to="/signup?social_account=google" colorScheme="red" width="100%" mb="4">
                     Sign Up using Google
+                </Button>
+
+                <Button as={RouterLink} to="/signup?social_account=facebook" colorScheme="red" width="100%">
+                    Sign Up using Facebook
                 </Button>
             </Box>
             <QuestionModal

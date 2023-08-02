@@ -1,18 +1,18 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {initializeApp} from 'firebase/app';
-import {createUserWithEmailAndPassword, getAuth, sendEmailVerification} from 'firebase/auth';
+import {createUserWithEmailAndPassword, getAuth, sendEmailVerification, User} from 'firebase/auth';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
 import {Box, Button, FormControl, FormLabel, Heading, Input, Select,} from '@chakra-ui/react';
 import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
 import {fetchData, postData, putData} from "./service/RestCall";
-
-const GET_getQuestionsFromDynamo = 'https://30quej290j.execute-api.us-east-1.amazonaws.com/prod';
+import {signInWithFacebook} from "./service/signInAndSignUpusingFacebook";
 
 const Signup = () => {
 
     const PUT_storeUserToDynamoDB: string = 'https://csxvr7woxf.execute-api.us-east-1.amazonaws.com/prod';
     const POST_KhushiSNSNotificationURL = 'https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/sendSubscriptions';
+    const GET_getQuestionsFromDynamo = 'https://30quej290j.execute-api.us-east-1.amazonaws.com/prod';
 
 
     const emailRef = useRef<HTMLInputElement | null>(null);
@@ -33,13 +33,12 @@ const Signup = () => {
 
     const [questionsFromDynamoDB, setQuestions] = useState<string[]>([]);
 
-    const [isSignUpUsingSocial, setSocial] = useState(false);
+    const [isSignUpUsingSocial, setSocial] = useState('');
     const location = useLocation();
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        console.log(searchParams.get('social_account'));
-        setSocial(searchParams.get('social_account') !== null);
+        setSocial(searchParams.get('social_account'));
         fetchData(GET_getQuestionsFromDynamo).then((data) => {
             data = JSON.parse(data['body']);
             setQuestions(data);
@@ -101,9 +100,14 @@ const Signup = () => {
     };
 
 
-    const handleGoogleSignUp = async () => {
-        const user = await signUpWithGoogle();
-        console.log(user);
+    const handleFacebookSignUp = async () => {
+        const user = await signInWithFacebook();
+        console.log('Logged in user:', user);
+        await storeToDynamo(user);
+    }
+
+    const storeToDynamo = async (user: User) => {
+        console.log("storeToDynamo", user);
         const userToSave = {
             firebase_user_id: user.uid,
             first_name: user.displayName.split(" ")[0].trim(),
@@ -124,7 +128,15 @@ const Signup = () => {
                 console.error("Google login success but user info not saved in dynamodb")
             }
         });
+    }
+
+    const handleGoogleSignUp = async () => {
+        const user = await signUpWithGoogle();
+        console.log(user);
+        await storeToDynamo(user);
     };
+
+
     return (
         <>
             <Box maxW="md" mx="auto" p="4">
@@ -252,9 +264,14 @@ const Signup = () => {
                             Sign Up
                         </Button>
                     }
-                    {isSignUpUsingSocial &&
+                    {isSignUpUsingSocial === 'google' &&
                         <Button colorScheme="blue" onClick={handleGoogleSignUp}>
                             Sign up using Google
+                        </Button>
+                    }
+                    {isSignUpUsingSocial === 'facebook' &&
+                        <Button colorScheme="blue" onClick={handleFacebookSignUp}>
+                            Sign up using Facebook
                         </Button>
                     }
                 </form>
