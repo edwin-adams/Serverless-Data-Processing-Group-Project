@@ -22,7 +22,7 @@ interface Team {
 const { Option } = Select;
 
 const Dashboard = () => {
-  localStorage.setItem("loggedInEmail", "harshilshah@gmail.com");
+  localStorage.setItem("loggedInEmail", "sharshil1299@gmail.com");
   localStorage.setItem("loggedInName", "Harshil Shah");
   let isPartOfTeam = false;
 
@@ -165,7 +165,6 @@ const Dashboard = () => {
   };
 
   const handleTeamNavigate = (teamId) => {
-    // Perform any additional logic or API calls here if needed before navigating
     navigate(`/team/${teamId}`);
   };
 
