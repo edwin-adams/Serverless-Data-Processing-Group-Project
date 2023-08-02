@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "firebase/auth";
 import { Button, Modal, Select, Space } from "antd";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   email: string;
@@ -8,9 +9,23 @@ interface User {
   first_name: string;
 }
 
+interface Team {
+  declined: boolean;
+  email: string;
+  inviteId: string;
+  status: boolean;
+  teamCreater: boolean;
+  teamName: string;
+  teamId: string;
+}
+
 const { Option } = Select;
 
 const Dashboard = () => {
+  localStorage.setItem("loggedInEmail", "harshilshah@gmail.com");
+  localStorage.setItem("loggedInName", "Harshil Shah");
+  let isPartOfTeam = false;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   //   const [teamName, setTeamName] = useState(null);
   const [teamName, setTeamName] = useState("The jugglers");
@@ -18,6 +33,10 @@ const Dashboard = () => {
   const [subscribedUsers, setSubsribedUsers] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [myTeams, setMyTeams] = useState<Team[]>([]);
+  const hasTeamsCreatedByUser = myTeams.some((team) => team.teamCreater);
+
+  const navigate = useNavigate();
 
   const generateTeamName = async () => {
     try {
@@ -53,6 +72,7 @@ const Dashboard = () => {
       const res = await response.json();
       console.log(res);
       setSubsribedUsers(res);
+      getYourTeams();
     } catch (e) {}
   };
 
@@ -95,6 +115,26 @@ const Dashboard = () => {
     console.log(res);
   };
 
+  const getYourTeams = async () => {
+    const loggedInEmail = localStorage.getItem("loggedInEmail");
+
+    const response = await fetch(
+      "https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/getYourTeams",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: loggedInEmail,
+        }),
+      }
+    );
+    const res = await response.json();
+    console.log(res.body);
+    setMyTeams(res.body);
+  };
+
   const showModal = () => {
     filterUsersByEmail();
     generateTeamName();
@@ -124,9 +164,16 @@ const Dashboard = () => {
     setFilteredUsers(filteredUsers);
   };
 
+  const handleTeamNavigate = (teamId) => {
+    // Perform any additional logic or API calls here if needed before navigating
+    navigate(`/team/${teamId}`);
+  };
+
   useEffect(() => {
     getAllUsers();
     getSubscribedUsers();
+
+    getYourTeams();
   }, []);
 
   return (
@@ -164,6 +211,36 @@ const Dashboard = () => {
         <br />
         <br />
       </Modal>
+      <br />
+      <a>Your Teams:</a>
+      <br />
+      <div>
+        {myTeams.map((team, index) => (
+          <div key={index} onClick={() => handleTeamNavigate(team.teamId)}>
+            {team.teamCreater && team.teamName}
+          </div>
+        ))}
+        {!hasTeamsCreatedByUser && (
+          <div>You haven't created any teams yet!</div>
+        )}
+      </div>
+      <a> Your Particaptions:</a>
+      <br />
+      <div>
+        {myTeams.map((team, index) => {
+          if (!team.teamCreater && team.status && !team.declined) {
+            isPartOfTeam = true;
+            return (
+              <div key={index} onClick={() => handleTeamNavigate(team.teamId)}>
+                {team.teamName}
+              </div>
+            );
+          } else {
+            return null;
+          }
+        })}
+        {!isPartOfTeam && <div>You are not a part of any team yet</div>}
+      </div>
     </>
   );
 };
