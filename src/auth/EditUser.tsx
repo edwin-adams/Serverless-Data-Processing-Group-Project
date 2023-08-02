@@ -69,7 +69,7 @@ const UserEditPage = () => {
 
     return (<>
             <Text fontSize="xl" fontWeight="bold">
-                Edit User
+                Update Profile
             </Text>
             <Box p={4}>
                 <VStack spacing={4} alignItems="flex-start">
