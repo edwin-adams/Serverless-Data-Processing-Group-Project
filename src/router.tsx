@@ -2,6 +2,7 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './shared/header';
+import Leaderboard from './leaderboard/leaderboard';
 
 // Always lazy load all components/modules
 const Login = lazy(() => import('./auth/login'));
@@ -21,6 +22,8 @@ const AppRouter = () => {
           <Route path='/forgot_password' Component={PasswordReset}/>
           <Route path="/dashboard" Component={Dashboard} />
           <Route path="/game" Component={Game} />
+          <Route path="/leaderboard" Component={Leaderboard} />
+
           
         </Routes>
       </Suspense>
