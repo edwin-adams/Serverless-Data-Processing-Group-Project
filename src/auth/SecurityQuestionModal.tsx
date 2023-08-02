@@ -45,7 +45,8 @@ export const QuestionModal = ({isModalOpen, handleModalToggle, questions, logged
                     user_id: data.user_id,
                     first_name: data.first_name,
                     last_name: data.last_name,
-                    email: data.email
+                    email: data.email,
+                    image_url: data.image
                 }));
                 navigate('/dashboard');
             } else {

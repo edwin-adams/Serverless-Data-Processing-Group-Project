@@ -1,11 +1,17 @@
 import AppRouter from './router';
+import 'bootstrap/dist/css/bootstrap.css';
+import Header from './shared/header';
+
 import {ChakraProvider} from '@chakra-ui/react'
 
 function App() {
     return (
-        <ChakraProvider>
-            <AppRouter/>
-        </ChakraProvider>
+        <>
+            <Header/>
+            <ChakraProvider>
+                <AppRouter/>
+            </ChakraProvider>
+        </>
     );
 }
 
