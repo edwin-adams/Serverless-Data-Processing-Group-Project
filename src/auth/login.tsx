@@ -25,6 +25,7 @@ const Login = () => {
 
     const [loggedInUserId, setLoggedInUserId] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isFPModalOpen, setIsFPModalOpen] = useState(false);
 
     const handleLogin = (e: {
         preventDefault: () => void;
@@ -107,7 +108,7 @@ const Login = () => {
                 </FormControl>
                 <Box display="flex" justifyContent="flex-end" mb="4">
                     <Text>
-                        <Button onClick={() => setIsModalOpen(true)}>Forgot Password?</Button>
+                        <Button onClick={() => setIsFPModalOpen(true)}>Forgot Password?</Button>
                     </Text>
                 </Box>
 
@@ -140,8 +141,8 @@ const Login = () => {
                 loggedInUserId={loggedInUserId}
             />
             <ResetPasswordModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}/>
+                isOpen={isFPModalOpen}
+                onClose={() => setIsFPModalOpen(false)}/>
         </>
     );
 };
