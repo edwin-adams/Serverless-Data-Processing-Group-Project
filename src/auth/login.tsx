@@ -2,13 +2,14 @@ import React, {useState} from 'react';
 import 'firebase/auth';
 import {initializeApp} from 'firebase/app';
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
-import {Box, Button, FormControl, FormLabel, Heading, Input, Link as ChakraLink, Text} from '@chakra-ui/react';
+import {Box, Button, FormControl, FormLabel, Heading, Input, Text} from '@chakra-ui/react';
 import {Link as RouterLink} from 'react-router-dom';
 import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
 import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
 import {QuestionModal} from "./SecurityQuestionModal";
 import {postData} from "./service/RestCall";
 import {signInWithFacebook} from "./service/signInAndSignUpusingFacebook";
+import ResetPasswordModal from "./ResetPasswordModal";
 
 
 const POST_fetchQuesFirstNameLastNameByUserID: string = 'https://v8vwn4gos0.execute-api.us-east-1.amazonaws.com/prod';
@@ -16,7 +17,6 @@ const POST_fetchQuesFirstNameLastNameByUserID: string = 'https://v8vwn4gos0.exec
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -24,6 +24,7 @@ const Login = () => {
     const [questions, setQuestions] = useState([]);
 
     const [loggedInUserId, setLoggedInUserId] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleLogin = (e: {
         preventDefault: () => void;
@@ -106,9 +107,7 @@ const Login = () => {
                 </FormControl>
                 <Box display="flex" justifyContent="flex-end" mb="4">
                     <Text>
-                        <ChakraLink as={RouterLink} to="/forgot_password">
-                            Forgot Password?
-                        </ChakraLink>
+                        <Button onClick={() => setIsModalOpen(true)}>Forgot Password?</Button>
                     </Text>
                 </Box>
 
@@ -140,6 +139,9 @@ const Login = () => {
                 questions={questions}
                 loggedInUserId={loggedInUserId}
             />
+            <ResetPasswordModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}/>
         </>
     );
 };

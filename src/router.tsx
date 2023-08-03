@@ -7,7 +7,6 @@ import Leaderboard from "./leaderboard/leaderboard";
 // Always lazy load all components/modules
 const Login = lazy(() => import("./auth/login"));
 const SignUp = lazy(() => import("./auth/signup"));
-const PasswordReset = lazy(() => import("./auth/PasswordReset"));
 const Game = lazy(() => import("./in-game-experinence/game"));
 const Dashboard = lazy(() => import("./auth/Dashboard"));
 const EditUser = lazy(() => import("./auth/EditUser"));
@@ -25,7 +24,6 @@ const AppRouter = () => {
           <Route path="/" Component={Login} />
           <Route path="/login" Component={Login} />
           <Route path="/signup" Component={SignUp} />
-          <Route path="/forgot_password" Component={PasswordReset} />
           <Route path="/dashboard" Component={Dashboard} />
           <Route path="/game" Component={Game} />
           <Route path="/editUser" Component={EditUser} />
