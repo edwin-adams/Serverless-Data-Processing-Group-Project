@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import {Avatar, Box, Button, Flex, Table, Tbody, Td, Text, Th, Thead, Tr} from "@chakra-ui/react";
 import GameStats, {GameData} from "./GameStates";
 import {deleteData, fetchData} from "./service/RestCall";
+import {callCloudFunction} from "../notifications/service/pub-sub-cloud-function";
 
 interface ScoreData {
     startTime: number;
@@ -25,11 +26,17 @@ const initialLeaderState: leader = {
     value: 0,
 };
 
+interface team_data {
+    team_id: string,
+    team_name: string,
+    invite_id: string
+}
+
 
 const Dashboard = () => {
     const [gameData, setGameData] = useState<GameData | null>(null);
     const [imageUrl, setImageUrl] = useState('');
-    const [teamAffiliations, setTeamAffiliations] = useState<Set<string>>(new Set<string>());
+    const [teamAffiliations, setTeamAffiliations] = useState<team_data[]>([]);
     const [loggedUser, setLoggedUser] = useState(JSON.parse(localStorage.getItem('user')));
 
     const [topScorer, setTopScore] = useState<leader>(initialLeaderState);
@@ -37,8 +44,8 @@ const Dashboard = () => {
     const [topWin, setTopWin] = useState<leader>(initialLeaderState);
     const [topLoss, setTopLoss] = useState<leader>(initialLeaderState);
 
-    const DELETE_khushideletefromteam: string = '';
-    const GET_khushiTeamsByUserID: string = '';
+    const DELETE_khushideletefromteam: string = 'https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/removeUserFromTeam';
+    const GET_khushiTeamsByUserID: string = 'https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/getTeamsByUserEmail';
 
     useEffect(() => {
         setLoggedUser(JSON.parse(localStorage.getItem('user')));
@@ -62,13 +69,25 @@ const Dashboard = () => {
             })
         }
 
+        callCloudFunction({email: "sharshil1299@gmail.com", message: "test message"}).then((res) => {
+            console.log(res);
+        });
+        getTeamsByUserId();
     }, []);
 
 
-    const getTeamsByUserId = async () => {
+    const getTeamsByUserId = () => {
         fetchData(GET_khushiTeamsByUserID + '?user_email=' + loggedUser.email).then((res) => {
-            console.log(res);
-            setTeamAffiliations(res);
+            console.log("res from khushi", res);
+            const isUniqueTeamId = (team: team_data, index: number, arr: team_data[]) => {
+                const teamIdsSet = new Set(arr.map((item) => item.team_id));
+                return teamIdsSet.has(team.team_id);
+            };
+
+            const uniqueTeamData = res.data.filter(isUniqueTeamId);
+            console.log(uniqueTeamData);
+
+            setTeamAffiliations(uniqueTeamData);
         });
     }
 
@@ -104,11 +123,12 @@ const Dashboard = () => {
 
     const handleButtonClick = (team_id: string) => {
         const payload = {
-            "user_email": loggedUser.email,
+            "user_id": loggedUser.email,
             "team_id": team_id
         }
         deleteData(DELETE_khushideletefromteam, payload).then((res) => {
             console.log(res);
+            getTeamsByUserId();
         })
     }
 
@@ -118,8 +138,6 @@ const Dashboard = () => {
         let lossCount = 0;
         let totalScore = 0;
         let totalGames = 0;
-
-        const uniqueNumbersSet: Set<string> = new Set<string>();
 
 
         scores.forEach((score) => {
@@ -131,7 +149,6 @@ const Dashboard = () => {
 
             totalScore += score.score;
             totalGames += 1;
-            uniqueNumbersSet.add(score.team_id);
         });
 
         setGameData({
@@ -141,8 +158,6 @@ const Dashboard = () => {
             "games played": totalGames
         });
 
-
-        setTeamAffiliations(uniqueNumbersSet);
 
         return {winCount, lossCount, totalScore};
     };
@@ -170,10 +185,10 @@ const Dashboard = () => {
             <Text fontSize="lg" fontWeight="bold">
                 Team Affiliations
             </Text>
-            {Array.from(teamAffiliations).map((number: string) => (
-                <Flex key={number} align="left">
-                    <p>{number}</p> &nbsp;&nbsp;&nbsp;
-                    <Button onClick={() => handleButtonClick(number)} mb={2}>Leave Team</Button>
+            {Array.from(teamAffiliations).map((team: team_data) => (
+                <Flex align="left">
+                    <p>{team.team_name}</p> &nbsp;&nbsp;&nbsp;
+                    <Button onClick={() => handleButtonClick(team.team_id)} mb={2}>Leave Team</Button>
                 </Flex>)
             )}
 
