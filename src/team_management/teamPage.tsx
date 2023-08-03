@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./acceptInvite.css";
 import { useParams } from "react-router-dom";
 import { Button, message, Popconfirm } from "antd";
+import LeaderBoard from "./leaderboard";
 
 const TeamPage = () => {
   const { teamId } = useParams();
@@ -137,6 +138,8 @@ const TeamPage = () => {
   };
 
   useEffect(() => {
+    localStorage.setItem("team_id", "");
+    localStorage.setItem("team_id", teamId);
     getTeamDetails();
   }, []);
 
@@ -188,7 +191,7 @@ const TeamPage = () => {
                 {entry.firstName} {entry.lastName} {entry.email}
                 <br />
                 {creater === loggedInEmail ? (
-                  <div>
+                  <>
                     <Popconfirm
                       title="Remove the user"
                       description="Are you sure to remove the user from this team?"
@@ -213,7 +216,7 @@ const TeamPage = () => {
                     ) : (
                       <Button>Admin</Button>
                     )}
-                  </div>
+                  </>
                 ) : (
                   <div>
                     {admin === loggedInEmail ? (
@@ -241,7 +244,7 @@ const TeamPage = () => {
                               okText="Yes"
                               cancelText="No"
                             >
-                              <Button danger>Leave game</Button>
+                              <Button danger>Leave team</Button>
                             </Popconfirm>
                             <Button>You are admin</Button>
                           </div>
@@ -258,7 +261,7 @@ const TeamPage = () => {
                             okText="Yes"
                             cancelText="No"
                           >
-                            <Button danger>Leave game</Button>
+                            <Button danger>Leave team</Button>
                           </Popconfirm>
                         )}
                       </div>
@@ -269,7 +272,8 @@ const TeamPage = () => {
               </p>
             ))}
         </div>
-        {console.log(updatedSecondArray)}
+        <br />
+        <LeaderBoard />
       </div>
     </>
   );
