@@ -3,6 +3,7 @@ import "./acceptInvite.css";
 import { useParams } from "react-router-dom";
 import { Button, message, Popconfirm } from "antd";
 import LeaderBoard from "./leaderboard";
+import { useNavigate } from "react-router-dom";
 
 const TeamPage = () => {
   const { teamId } = useParams();
@@ -15,6 +16,7 @@ const TeamPage = () => {
   const [createrAllDetails, setCreaterAllDetails] = useState([]);
   const loggedInEmail = localStorage.getItem("loggedInEmail");
   console.log(loggedInEmail);
+  const navigate = useNavigate();
 
   interface TeamData {
     inviteId: string;
@@ -135,6 +137,10 @@ const TeamPage = () => {
 
   const cancel = (e: React.MouseEvent<HTMLElement>) => {
     console.log(e);
+  };
+
+  const handleNavigation = () => {
+    navigate("/games");
   };
 
   useEffect(() => {
@@ -274,6 +280,10 @@ const TeamPage = () => {
         </div>
         <br />
         <LeaderBoard />
+        <br />
+        <Button type="primary" onClick={handleNavigation}>
+          Explore Games
+        </Button>
       </div>
     </>
   );
