@@ -14,10 +14,10 @@
     "@types/node": "^16.18.34",
     "@types/react": "^18.2.8",
     "@types/react-dom": "^18.2.4",
+    "antd": "^5.8.1",
+    "aws-sdk": "^2.1424.0",
     "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
-    "antd": "^5.8.0",
-    "aws-sdk": "^2.1424.0",
     "firebase": "^9.22.1",
     "framer-motion": "^10.12.16",
     "react": "^18.2.0",
@@ -55,8 +55,8 @@
     ]
   },
   "devDependencies": {
+    "@kommunicate/kommunicate-chatbot-plugin": "^0.0.6",
     "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@kommunicate/kommunicate-chatbot-plugin": "^0.0.6"
+    "@types/react-dom": "^18.2.7"
   }
 }
