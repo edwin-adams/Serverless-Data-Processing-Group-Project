@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "firebase/auth";
-import { Button, Modal, Select, Space } from "antd";
+import { Button, Modal, Select, Space, Card } from "antd";
 import { useNavigate } from "react-router-dom";
+import "./acceptInvite.css";
 
 interface User {
   email: string;
@@ -22,13 +23,13 @@ interface Team {
 const { Option } = Select;
 
 const Dashboard = () => {
-  localStorage.setItem("loggedInEmail", "sharshil1299@gmail.com");
-  localStorage.setItem("loggedInName", "Harshil Shah");
+  // localStorage.setItem("loggedInEmail", "sharshil1299@gmail.com");
+  // localStorage.setItem("loggedInName", "Harshil Shah");
   let isPartOfTeam = false;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  //   const [teamName, setTeamName] = useState(null);
-  const [teamName, setTeamName] = useState("The jugglers");
+  const [teamName, setTeamName] = useState(null);
+  // const [teamName, setTeamName] = useState("The jugglers");
   const [users, setUsers] = useState<User[]>([]);
   const [subscribedUsers, setSubsribedUsers] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -40,21 +41,21 @@ const Dashboard = () => {
 
   const generateTeamName = async () => {
     try {
-      //   const response = await fetch(
-      //     "https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/testName",
-      //     {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({ prompt: "Generate me a unique team name" }),
-      //     }
-      //   );
-      //   const res = await response.json();
-      //   setTeamName(res.body);
-      //   if (res) {
-      setIsModalOpen(true);
-      //   }
+      const response = await fetch(
+        "https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/testName",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt: "Generate me a unique team name" }),
+        }
+      );
+      const res = await response.json();
+      setTeamName(res.body);
+      if (res) {
+        setIsModalOpen(true);
+      }
     } catch (e) {}
   };
 
@@ -176,8 +177,8 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <>
-      <Button type="primary" onClick={showModal}>
+    <div className="newClass">
+      <Button type="primary" className="create-team" onClick={showModal}>
         Create Team
       </Button>
       <Modal
@@ -210,37 +211,64 @@ const Dashboard = () => {
         <br />
         <br />
       </Modal>
-      <br />
-      <a>Your Teams:</a>
-      <br />
-      <div>
-        {myTeams.map((team, index) => (
-          <div key={index} onClick={() => handleTeamNavigate(team.teamId)}>
-            {team.teamCreater && team.teamName}
+      <div className="column-container">
+        <div className="columns">
+          <div className="heading-wrapper">
+            <span className="heading-text">Your Teams:</span>
           </div>
-        ))}
-        {!hasTeamsCreatedByUser && (
-          <div>You haven't created any teams yet!</div>
-        )}
+          <div className="layout-padding">
+            {myTeams.map((team, index) => (
+              <>
+                {" "}
+                <div
+                  key={index}
+                  onClick={() => handleTeamNavigate(team.teamId)}
+                >
+                  {team.teamCreater && (
+                    <Card style={{ width: 300 }} className="card-container">
+                      <div
+                        key={index}
+                        onClick={() => handleTeamNavigate(team.teamId)}
+                      >
+                        {team.teamName}
+                      </div>
+                    </Card>
+                  )}
+                </div>
+              </>
+            ))}
+            {!hasTeamsCreatedByUser && (
+              <div>You haven't created any teams yet!</div>
+            )}
+          </div>
+        </div>
+        <div className="columns">
+          <div className="heading-wrapper">
+            <span className="heading-text">Your Participation:</span>
+          </div>
+          <div>
+            {myTeams.map((team, index) => {
+              if (!team.teamCreater && team.status && !team.declined) {
+                isPartOfTeam = true;
+                return (
+                  <Card style={{ width: 300 }} className="card-container">
+                    <div
+                      key={index}
+                      onClick={() => handleTeamNavigate(team.teamId)}
+                    >
+                      {team.teamName}
+                    </div>
+                  </Card>
+                );
+              } else {
+                return null;
+              }
+            })}
+            {!isPartOfTeam && <div>You are not a part of any team yet</div>}
+          </div>
+        </div>
       </div>
-      <a> Your Particaptions:</a>
-      <br />
-      <div>
-        {myTeams.map((team, index) => {
-          if (!team.teamCreater && team.status && !team.declined) {
-            isPartOfTeam = true;
-            return (
-              <div key={index} onClick={() => handleTeamNavigate(team.teamId)}>
-                {team.teamName}
-              </div>
-            );
-          } else {
-            return null;
-          }
-        })}
-        {!isPartOfTeam && <div>You are not a part of any team yet</div>}
-      </div>
-    </>
+    </div>
   );
 };
 
