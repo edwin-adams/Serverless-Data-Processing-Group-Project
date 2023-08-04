@@ -267,7 +267,11 @@ const Dashboard = () => {
                 return null;
               }
             })}
-            {!isPartOfTeam && <div>You are not a part of any team yet</div>}
+            {!isPartOfTeam && (
+              <div>
+                You are not a part of any other team create by other yet
+              </div>
+            )}
           </div>
         </div>
       </div>
