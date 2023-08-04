@@ -3,7 +3,6 @@ import {Link} from "react-router-dom";
 import {Avatar, Box, Button, Flex, Table, Tbody, Td, Text, Th, Thead, Tr} from "@chakra-ui/react";
 import GameStats, {GameData} from "./GameStates";
 import {deleteData, fetchData} from "./service/RestCall";
-import {callCloudFunction} from "../notifications/service/pub-sub-cloud-function";
 
 interface ScoreData {
     startTime: number;
@@ -68,10 +67,6 @@ const Dashboard = () => {
                 getAchievements(res);
             })
         }
-
-        callCloudFunction({email: "sharshil1299@gmail.com", message: "test message"}).then((res) => {
-            console.log(res);
-        });
         getTeamsByUserId();
     }, []);
 
