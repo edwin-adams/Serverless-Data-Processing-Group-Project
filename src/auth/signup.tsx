@@ -106,6 +106,7 @@ const Signup = () => {
             const user = await signInWithFacebook();
             console.log('Logged in user:', user);
             await storeToDynamo(user);
+            navigate('/')
         }
 
 
@@ -139,6 +140,7 @@ const Signup = () => {
             const user = await signUpWithGoogle();
             console.log(user);
             await storeToDynamo(user);
+            navigate('/')
         };
 
 
