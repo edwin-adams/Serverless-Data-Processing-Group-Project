@@ -17,7 +17,7 @@ const TriviaTable: React.FC<any> = ({ items }) => {
       JSON.stringify({ ...user, game_id: item.game_id })
     );
 
-    const payload = { user_id: user.user_id, game_id: item.game_id };
+    const payload = { user_id: user.first_name, game_id: item.game_id };
 
     if (user) {
       setLoading(true);

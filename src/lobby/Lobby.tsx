@@ -82,7 +82,7 @@ const CustomCard = ({ data }) => {
     <Card padding="5" maxW="sm" margin="3">
       <Text fontSize="lg">{data.id}</Text>
       {/* <Text fontSize="lg">{data.name}</Text> */}
-      <Text fontSize="lg">Test Name</Text>
+      {/* <Text fontSize="lg">Test Name</Text> */}
     </Card>
   );
 };
