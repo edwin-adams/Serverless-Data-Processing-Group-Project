@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./leaderboard.css";
 import "react-toastify/dist/ReactToastify.css";
 
+
 const Leaderboard = () => {
   const [iframeSrc, setIframeSrc] = useState(
     "https://ca-central-1.quicksight.aws.amazon.com/sn/embed/share/accounts/627830518910/dashboards/c2ecec32-3e07-472c-987a-ba711ae47c78?directory_alias=msojitra"
