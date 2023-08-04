@@ -199,7 +199,7 @@ const Game = () => {
           data: {
             game_id: game_id,
             team_id: team_id,
-            user_id: currentUser.id || currentUser.email,
+            user_id: currentUser.email,
             score: finalScore,
             startTime: currentQuestion.startTime,
           },
