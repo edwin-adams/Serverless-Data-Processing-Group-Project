@@ -35,6 +35,7 @@ const Dashboard = () => {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [myTeams, setMyTeams] = useState<Team[]>([]);
+  const [loggedInuser, setLoggedInuser] = useState(null);
   const hasTeamsCreatedByUser = myTeams.some((team) => team.teamCreater);
 
   const navigate = useNavigate();
@@ -91,12 +92,15 @@ const Dashboard = () => {
       const res = await response.json();
       console.log(res.body);
       setUsers(res.body);
+      getSubscribedUsers();
     } catch (e) {}
   };
 
   const sendInvite = async () => {
-    const senderName = localStorage.getItem("loggedInName");
-    const senderEmail = localStorage.getItem("loggedInEmail");
+    // const senderName = localStorage.getItem("loggedInName");
+    const senderName = loggedInuser?.first_name + loggedInuser?.last_name;
+    console.log(senderName);
+    const senderEmail = loggedInuser?.email;
     const response = await fetch(
       "https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/sendInvite",
       {
@@ -114,10 +118,11 @@ const Dashboard = () => {
     );
     const res = await response.json();
     console.log(res);
+    getAllUsers();
   };
 
   const getYourTeams = async () => {
-    const loggedInEmail = localStorage.getItem("loggedInEmail");
+    const loggedInEmail = JSON.parse(localStorage.getItem("user")).email;
 
     const response = await fetch(
       "https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/getYourTeams",
@@ -170,10 +175,8 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    setLoggedInuser(JSON.parse(localStorage.getItem("user")));
     getAllUsers();
-    getSubscribedUsers();
-
-    getYourTeams();
   }, []);
 
   return (

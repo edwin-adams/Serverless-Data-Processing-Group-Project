@@ -14,7 +14,7 @@ const TeamPage = () => {
   const [admin, setAdmin] = useState(null);
   const [updatedSecondArray, setUpdatedSecondArray] = useState([]);
   const [createrAllDetails, setCreaterAllDetails] = useState([]);
-  const loggedInEmail = localStorage.getItem("loggedInEmail");
+  const loggedInEmail = JSON.parse(localStorage.getItem("user")).email;
   console.log(loggedInEmail);
   const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ const TeamPage = () => {
   }
 
   const getTeamDetails = async () => {
-    const loggedInEmail = localStorage.getItem("loggedInEmail");
+    const loggedInEmail = JSON.parse(localStorage.getItem("user")).email;
 
     const response = await fetch(
       "https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/getTeamMembers",
