@@ -177,8 +177,8 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <>
-      <Button type="primary" onClick={showModal}>
+    <div className="newClass">
+      <Button type="primary" className="create-team" onClick={showModal}>
         Create Team
       </Button>
       <Modal
@@ -211,46 +211,64 @@ const Dashboard = () => {
         <br />
         <br />
       </Modal>
-      <br />
-      <a>Your Teams:</a>
-      <br />
-      <div className="layout-padding">
-        {myTeams.map((team, index) => (
-          <>
-            {" "}
-            <div key={index} onClick={() => handleTeamNavigate(team.teamId)}>
-              {team.teamCreater && team.teamName}
-            </div>
-            <br />
-          </>
-        ))}
-        {!hasTeamsCreatedByUser && (
-          <div>You haven't created any teams yet!</div>
-        )}
-      </div>
-      <a> Your Particaptions:</a>
-      <br />
-      <div>
-        {myTeams.map((team, index) => {
-          if (!team.teamCreater && team.status && !team.declined) {
-            isPartOfTeam = true;
-            return (
-              <Card style={{ width: 300 }}>
+      <div className="column-container">
+        <div className="columns">
+          <div className="heading-wrapper">
+            <span className="heading-text">Your Teams:</span>
+          </div>
+          <div className="layout-padding">
+            {myTeams.map((team, index) => (
+              <>
+                {" "}
                 <div
                   key={index}
                   onClick={() => handleTeamNavigate(team.teamId)}
                 >
-                  {team.teamName}
+                  {team.teamCreater && (
+                    <Card style={{ width: 300 }} className="card-container">
+                      <div
+                        key={index}
+                        onClick={() => handleTeamNavigate(team.teamId)}
+                      >
+                        {team.teamName}
+                      </div>
+                    </Card>
+                  )}
                 </div>
-              </Card>
-            );
-          } else {
-            return null;
-          }
-        })}
-        {!isPartOfTeam && <div>You are not a part of any team yet</div>}
+              </>
+            ))}
+            {!hasTeamsCreatedByUser && (
+              <div>You haven't created any teams yet!</div>
+            )}
+          </div>
+        </div>
+        <div className="columns">
+          <div className="heading-wrapper">
+            <span className="heading-text">Your Participation:</span>
+          </div>
+          <div>
+            {myTeams.map((team, index) => {
+              if (!team.teamCreater && team.status && !team.declined) {
+                isPartOfTeam = true;
+                return (
+                  <Card style={{ width: 300 }} className="card-container">
+                    <div
+                      key={index}
+                      onClick={() => handleTeamNavigate(team.teamId)}
+                    >
+                      {team.teamName}
+                    </div>
+                  </Card>
+                );
+              } else {
+                return null;
+              }
+            })}
+            {!isPartOfTeam && <div>You are not a part of any team yet</div>}
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
