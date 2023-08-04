@@ -1,90 +1,67 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import "./leaderboard.css";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
 
 const Leaderboard = () => {
-  const data = [
-    {
-      name: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Page D",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
+  const [iframeSrc, setIframeSrc] = useState(
+    "https://ca-central-1.quicksight.aws.amazon.com/sn/embed/share/accounts/627830518910/dashboards/c2ecec32-3e07-472c-987a-ba711ae47c78?directory_alias=msojitra"
+  );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          "https://k78f41lwc2.execute-api.us-east-1.amazonaws.com/Prod/gamelobby",
-          {}
-        );
-        console.log(response);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  const handleButtonClick = (newSrc: any) => {
+    setIframeSrc(newSrc);
+  };
 
-    fetchData();
-  }, []);
   return (
     <>
       <div className="container">
         <div className="row mt-2">
+          <div className="d-flex align-items-center">
+            <button
+              className="btn btn-primary mx-1"
+              onClick={() =>
+                handleButtonClick(
+                  "https://ca-central-1.quicksight.aws.amazon.com/sn/embed/share/accounts/627830518910/dashboards/c2ecec32-3e07-472c-987a-ba711ae47c78?directory_alias=msojitra#p.LastNDays=1"
+                )
+              }
+            >
+              Daily
+            </button>{" "}
+            |
+            <button
+              className="btn btn-primary mx-1"
+              onClick={() =>
+                handleButtonClick(
+                  "https://ca-central-1.quicksight.aws.amazon.com/sn/embed/share/accounts/627830518910/dashboards/c2ecec32-3e07-472c-987a-ba711ae47c78?directory_alias=msojitra#p.LastNDays=7"
+                )
+              }
+            >
+              Weekly
+            </button>{" "}
+            |
+            <button
+              className="btn btn-primary mx-1"
+              onClick={() =>
+                handleButtonClick(
+                  "https://ca-central-1.quicksight.aws.amazon.com/sn/embed/share/accounts/627830518910/dashboards/c2ecec32-3e07-472c-987a-ba711ae47c78?directory_alias=msojitra#p.LastNDays=30"
+                )
+              }
+            >
+              Monthly
+            </button>{" "}
+            |
+            <button
+              className="btn btn-primary mx-1"
+              onClick={() =>
+                handleButtonClick(
+                  "https://ca-central-1.quicksight.aws.amazon.com/sn/embed/share/accounts/627830518910/dashboards/c2ecec32-3e07-472c-987a-ba711ae47c78?directory_alias=msojitra"
+                )
+              }
+            >
+              All-Time
+            </button>
+          </div>
           <div className="col-md-12">
-            <iframe
-              width="960"
-              height="720"
-              src="https://ca-central-1.quicksight.aws.amazon.com/sn/embed/share/accounts/627830518910/dashboards/3d50798e-55bb-4a50-9400-7dfbebf42c1a?directory_alias=msojitra"
-            ></iframe>
+            <iframe width="1200" height="720" src={iframeSrc}></iframe>
           </div>
         </div>
       </div>
