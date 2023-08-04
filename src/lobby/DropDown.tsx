@@ -157,7 +157,9 @@ const MyComponent: React.FC = () => {
         </Box>
       </Flex>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button onClick={() => navigate("/tagQuestion")}>Tag Questions</Button>
+        <Button onClick={() => navigate("/tagQuestion")}>
+          Suggest Questions
+        </Button>
       </Box>
       <div>
         <TriviaTable items={filteredItems} />
