@@ -5,7 +5,7 @@ import {firebaseConfig} from '../../CloudConfig/getFirebaseConfig';
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-export const ImageUpload = async (image, user_id) => {
+export const ImageUpload = async (image: Blob | ArrayBuffer | Uint8Array, user_id: string) => {
     if (image) {
         const storageRef = ref(storage, `${user_id}`);
         const res = await uploadBytes(storageRef, image);

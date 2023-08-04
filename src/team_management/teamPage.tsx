@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./acceptInvite.css";
 import { useParams } from "react-router-dom";
 import { Button, message, Popconfirm } from "antd";
+import LeaderBoard from "./leaderboard";
+import { useNavigate } from "react-router-dom";
 
 const TeamPage = () => {
   const { teamId } = useParams();
@@ -12,8 +14,9 @@ const TeamPage = () => {
   const [admin, setAdmin] = useState(null);
   const [updatedSecondArray, setUpdatedSecondArray] = useState([]);
   const [createrAllDetails, setCreaterAllDetails] = useState([]);
-  const loggedInEmail = localStorage.getItem("loggedInEmail");
+  const loggedInEmail = JSON.parse(localStorage.getItem("user")).email;
   console.log(loggedInEmail);
+  const navigate = useNavigate();
 
   interface TeamData {
     inviteId: string;
@@ -34,7 +37,7 @@ const TeamPage = () => {
   }
 
   const getTeamDetails = async () => {
-    const loggedInEmail = localStorage.getItem("loggedInEmail");
+    const loggedInEmail = JSON.parse(localStorage.getItem("user")).email;
 
     const response = await fetch(
       "https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/getTeamMembers",
@@ -54,7 +57,7 @@ const TeamPage = () => {
       (entry) => entry.teamCreater === true
     );
     const adminEntry = res.body.find((entry) => entry.isAdmin === true);
-    setCreater(teamCreatorEntry.email);
+    setCreater(teamCreatorEntry?.email);
     setCreaterAllDetails(teamCreatorEntry);
     setAdmin(adminEntry?.email);
     setTeamName(res.body.length > 0 ? res.body[0].teamName : "");
@@ -136,7 +139,17 @@ const TeamPage = () => {
     console.log(e);
   };
 
+  const handleNavigation = () => {
+    navigate("/exploreGame");
+  };
+
+  const handleLeaderboardNavigation = () => {
+    navigate("/leaderboard");
+  };
+
   useEffect(() => {
+    localStorage.setItem("team_id", "");
+    localStorage.setItem("team_id", teamId);
     getTeamDetails();
   }, []);
 
@@ -160,118 +173,134 @@ const TeamPage = () => {
   }, [users, teamMembers]);
 
   return (
-    <>
-      <div className="center-container">
-        {" "}
-        Team Name:
-        <br />
-        {teamName}
-        <br />
-        <br />
-        Team Leader:
-        {updatedSecondArray
-          .filter((entry) => entry.teamCreater)
-          .map((entry, index) => (
-            <p key={index}>
-              {entry.firstName} {entry.lastName}
-            </p>
-          ))}
-        <br />
-        Team Members:
-        <br />
-        <br />
-        <div>
-          {updatedSecondArray
-            .filter((entry) => !entry.teamCreater)
-            .map((entry, index) => (
-              <p key={index}>
-                {entry.firstName} {entry.lastName} {entry.email}
-                <br />
-                {creater === loggedInEmail ? (
-                  <div>
-                    <Popconfirm
-                      title="Remove the user"
-                      description="Are you sure to remove the user from this team?"
-                      onConfirm={(e) => confirm(e, entry.inviteId)}
-                      onCancel={cancel}
-                      okText="Yes"
-                      cancelText="No"
-                    >
-                      <Button danger>Remove</Button>
-                    </Popconfirm>
-                    {!entry.isAdmin ? (
-                      <Popconfirm
-                        title="Promote the team member"
-                        description="Are you sure to promote the user to admin?"
-                        onConfirm={(e) => confirmPromote(e, entry.inviteId)}
-                        onCancel={cancel}
-                        okText="Yes"
-                        cancelText="No"
-                      >
-                        <Button danger>Promote to Admin</Button>
-                      </Popconfirm>
-                    ) : (
-                      <Button>Admin</Button>
-                    )}
-                  </div>
-                ) : (
-                  <div>
-                    {admin === loggedInEmail ? (
-                      <div>
-                        {admin !== entry.email && (
+    <div className="newClass">
+      <div className="name-header">
+        <div className="team-info">
+          <h2>{teamName}</h2>
+        </div>
+      </div>
+      <div className="team-members">
+        <div className="column">
+          <div className="team-leader">
+            <p>Team Leader:</p>
+            {updatedSecondArray
+              .filter((entry) => entry.teamCreater)
+              .map((entry, index) => (
+                <p key={index}>
+                  {entry.firstName} {entry.lastName}
+                </p>
+              ))}
+          </div>
+        </div>
+        <div className="column">
+          <div className="team-members-list">
+            <p className="member-header">Team Members:</p>
+            <div>
+              {updatedSecondArray
+                .filter((entry) => !entry.teamCreater)
+                .map((entry, index) => (
+                  <p key={index}>
+                    {entry.firstName} {entry.lastName} {entry.email}
+                    <br />
+                    {creater === loggedInEmail ? (
+                      <>
+                        <Popconfirm
+                          title="Remove the user"
+                          description="Are you sure to remove the user from this team?"
+                          onConfirm={(e) => confirm(e, entry.inviteId)}
+                          onCancel={cancel}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <Button danger>Remove</Button>
+                        </Popconfirm>
+                        {!entry.isAdmin ? (
                           <Popconfirm
-                            title="Remove the user"
-                            description="Are you sure to remove the user from this team?"
-                            onConfirm={(e) => confirm(e, entry.inviteId)}
+                            title="Promote the team member"
+                            description="Are you sure to promote the user to admin?"
+                            onConfirm={(e) => confirmPromote(e, entry.inviteId)}
                             onCancel={cancel}
                             okText="Yes"
                             cancelText="No"
                           >
-                            <Button danger>Remove</Button>
+                            <Button danger>Promote to Admin</Button>
                           </Popconfirm>
+                        ) : (
+                          <Button>Admin</Button>
                         )}
-
-                        {admin === entry.email && (
+                      </>
+                    ) : (
+                      <div>
+                        {admin === loggedInEmail ? (
                           <div>
-                            <Popconfirm
-                              title="Leave Game"
-                              description="Are you sure you want to leave?"
-                              onConfirm={(e) => confirm(e, entry.inviteId)}
-                              onCancel={cancel}
-                              okText="Yes"
-                              cancelText="No"
-                            >
-                              <Button danger>Leave game</Button>
-                            </Popconfirm>
-                            <Button>You are admin</Button>
+                            {admin !== entry.email && (
+                              <Popconfirm
+                                title="Remove the user"
+                                description="Are you sure to remove the user from this team?"
+                                onConfirm={(e) => confirm(e, entry.inviteId)}
+                                onCancel={cancel}
+                                okText="Yes"
+                                cancelText="No"
+                              >
+                                <Button danger>Remove</Button>
+                              </Popconfirm>
+                            )}
+
+                            {admin === entry.email && (
+                              <div>
+                                <Popconfirm
+                                  title="Leave Game"
+                                  description="Are you sure you want to leave?"
+                                  onConfirm={(e) => confirm(e, entry.inviteId)}
+                                  onCancel={cancel}
+                                  okText="Yes"
+                                  cancelText="No"
+                                >
+                                  <Button danger>Leave team</Button>
+                                </Popconfirm>
+                                <Button>You are admin</Button>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div>
+                            {!entry.isAdmin &&
+                              !entry.teamCreater &&
+                              loggedInEmail === entry.email && (
+                                <Popconfirm
+                                  title="Leave Game"
+                                  description="Are you sure you want to leave?"
+                                  onConfirm={(e) => confirm(e, entry.inviteId)}
+                                  onCancel={cancel}
+                                  okText="Yes"
+                                  cancelText="No"
+                                >
+                                  <Button danger>Leave team</Button>
+                                </Popconfirm>
+                              )}
                           </div>
                         )}
                       </div>
-                    ) : (
-                      <div>
-                        {!entry.isAdmin && !entry.teamCreater && (
-                          <Popconfirm
-                            title="Leave Game"
-                            description="Are you sure you want to leave?"
-                            onConfirm={(e) => confirm(e, entry.inviteId)}
-                            onCancel={cancel}
-                            okText="Yes"
-                            cancelText="No"
-                          >
-                            <Button danger>Leave game</Button>
-                          </Popconfirm>
-                        )}
-                      </div>
                     )}
-                  </div>
-                )}
-                <br />
-              </p>
-            ))}
+                    <br />
+                  </p>
+                ))}
+            </div>
+          </div>
         </div>
-        {console.log(updatedSecondArray)}
       </div>
-    </>
+      <div className="team-members" style={{ marginLeft: "-70px" }}>
+        <div className="buttons">
+          <LeaderBoard />
+          <Button type="primary" onClick={handleNavigation}>
+            Explore Games
+          </Button>
+          <Button type="primary" onClick={handleLeaderboardNavigation}>
+            Leaderboard
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

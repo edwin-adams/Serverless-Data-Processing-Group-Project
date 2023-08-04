@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./game.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
   value: string;
@@ -22,13 +23,14 @@ const Game = () => {
   const [score, setScore] = useState(0);
   const [scoreBoard, setScoreBoard] = useState<any>([]);
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
-  const [showQuestion, setShowQuestion] = useState(false);
+  const [showQuestion, setShowQuestion] = useState(true);
   const [lastQuestion, setLastQuestion] = useState<any>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("Connecting to WebSocket");
     socketRef.current = new WebSocket(
-      "wss://t421xufby5.execute-api.ca-central-1.amazonaws.com/Prod"
+      "wss://h60a87zy53.execute-api.ca-central-1.amazonaws.com/Prod"
     );
 
     const socket = socketRef.current;
@@ -40,7 +42,11 @@ const Game = () => {
       socketRef.current.send(
         JSON.stringify({
           action: "saveIdentity",
-          data: currentUser,
+          data: {
+            currentUser: currentUser,
+            teamId : team_id,
+            gameId: game_id,
+          },
         })
       );
       socketRef.current.send(
@@ -85,6 +91,7 @@ const Game = () => {
         }
         case "gameOver": {
           toast.error("Game Over");
+          navigate("/leaderboard");
           break;
         }
         case "scoreSubmitted" : {
@@ -169,6 +176,7 @@ const Game = () => {
           data: {
             value: message,
             sender: currentUser,
+            team_id: team_id,
           },
         })
       );
@@ -194,7 +202,7 @@ const Game = () => {
           data: {
             game_id: game_id,
             team_id: team_id,
-            user_id: currentUser.id || currentUser.email,
+            user_id: currentUser.email,
             score: finalScore,
             startTime: currentQuestion.startTime,
           },

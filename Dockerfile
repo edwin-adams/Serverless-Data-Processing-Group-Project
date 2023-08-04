@@ -5,7 +5,7 @@ FROM node:14-slim
 WORKDIR /app
 
 # Copy the package.json and package-lock.json files to the container's working directory
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 # Install dependencies
 RUN npm i
