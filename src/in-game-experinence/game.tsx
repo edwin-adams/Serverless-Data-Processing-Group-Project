@@ -22,13 +22,13 @@ const Game = () => {
   const [score, setScore] = useState(0);
   const [scoreBoard, setScoreBoard] = useState<any>([]);
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
-  const [showQuestion, setShowQuestion] = useState(false);
+  const [showQuestion, setShowQuestion] = useState(true);
   const [lastQuestion, setLastQuestion] = useState<any>({});
 
   useEffect(() => {
     console.log("Connecting to WebSocket");
     socketRef.current = new WebSocket(
-      "wss://t421xufby5.execute-api.ca-central-1.amazonaws.com/Prod"
+      "wss://h60a87zy53.execute-api.ca-central-1.amazonaws.com/Prod"
     );
 
     const socket = socketRef.current;
@@ -40,7 +40,11 @@ const Game = () => {
       socketRef.current.send(
         JSON.stringify({
           action: "saveIdentity",
-          data: currentUser,
+          data: {
+            currentUser: currentUser,
+            teamId : team_id,
+            gameId: game_id,
+          },
         })
       );
       socketRef.current.send(
@@ -169,6 +173,7 @@ const Game = () => {
           data: {
             value: message,
             sender: currentUser,
+            team_id: team_id,
           },
         })
       );
