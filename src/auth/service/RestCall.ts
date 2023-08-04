@@ -48,7 +48,7 @@ async function patchData(apiUrl: string, payload: any) {
     }
 }
 
-async function deleteData(apiUrl: string, payload: string) {
+async function deleteData(apiUrl: string, payload: any) {
     try {
         const response = await fetch(`${apiUrl}`, {
             method: 'DELETE',
