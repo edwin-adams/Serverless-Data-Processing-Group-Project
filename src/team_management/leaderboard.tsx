@@ -56,7 +56,7 @@ const Leaderboard = () => {
   const getTeamGameData = async () => {
     try {
       const response = await fetch(
-        `https://rv7nzfzjhc.execute-api.ca-central-1.amazonaws.com/Prod/getScore?teamId=${teamId}`,
+        `https://jypdhmskqa.execute-api.ca-central-1.amazonaws.com/Prod/getScore?teamId=${teamId}`,
         {
           method: "GET",
           headers: {
