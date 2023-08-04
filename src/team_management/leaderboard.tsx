@@ -3,14 +3,14 @@ import "firebase/auth";
 import { Button, Modal } from "antd";
 
 const Leaderboard = () => {
-  //   const teamId = localStorage.getItem("team_id");
+  const teamId = localStorage.getItem("team_id");
   const [scoreData, setScoreData] = useState(null);
   const [gamesPlayed, setGamesPlayed] = useState(null);
   const [allScoreData, setAllScoreData] = useState(null);
   const [userTotals, setUserTotals] = useState(null);
   const [users, setUsers] = useState(null);
 
-  const teamId = "team_5";
+  // const teamId = "team_5";
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {initializeApp} from 'firebase/app';
 import {createUserWithEmailAndPassword, getAuth, sendEmailVerification, User} from 'firebase/auth';
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import {firebaseConfig} from "../CloudConfig/getFirebaseConfig";
 import {Box, Button, FormControl, FormLabel, Heading, Input, Select,} from '@chakra-ui/react';
 import {signUpWithGoogle} from "./service/signInAndSignUpusingGoogleAccount";
@@ -32,6 +32,8 @@ const Signup = () => {
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+
+        const navigate = useNavigate();
 
         const [questionsFromDynamoDB, setQuestions] = useState<string[]>([]);
 
@@ -92,7 +94,10 @@ const Signup = () => {
                     })
                     .catch((error) => {
                         console.error('Error sending verification email:', error);
-                    });
+                    }).finally(() => {
+                    navigate('/')
+                });
+
             })
         }
 
