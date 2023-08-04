@@ -28,7 +28,7 @@ const AppRouter = () => {
           <Route path="/game" Component={Game} />
           <Route path="/editUser" Component={EditUser} />
           <Route path="/leaderboard" Component={Leaderboard} />
-          <Route path="/dropDown" Component={DropDown} />
+          <Route path="/exploreGame" Component={DropDown} />
           <Route
             path="/acceptInvite/:teamName/:sender/:subscribee/:uuid"
             Component={AcceptInvite}

@@ -260,18 +260,20 @@ const TeamPage = () => {
                           </div>
                         ) : (
                           <div>
-                            {!entry.isAdmin && !entry.teamCreater && (
-                              <Popconfirm
-                                title="Leave Game"
-                                description="Are you sure you want to leave?"
-                                onConfirm={(e) => confirm(e, entry.inviteId)}
-                                onCancel={cancel}
-                                okText="Yes"
-                                cancelText="No"
-                              >
-                                <Button danger>Leave team</Button>
-                              </Popconfirm>
-                            )}
+                            {!entry.isAdmin &&
+                              !entry.teamCreater &&
+                              loggedInEmail === entry.email && (
+                                <Popconfirm
+                                  title="Leave Game"
+                                  description="Are you sure you want to leave?"
+                                  onConfirm={(e) => confirm(e, entry.inviteId)}
+                                  onCancel={cancel}
+                                  okText="Yes"
+                                  cancelText="No"
+                                >
+                                  <Button danger>Leave team</Button>
+                                </Popconfirm>
+                              )}
                           </div>
                         )}
                       </div>

@@ -49,7 +49,9 @@ const Dashboard = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ prompt: "Generate me a unique team name" }),
+          body: JSON.stringify({
+            prompt: "Generate me a unique one word team name",
+          }),
         }
       );
       const res = await response.json();
