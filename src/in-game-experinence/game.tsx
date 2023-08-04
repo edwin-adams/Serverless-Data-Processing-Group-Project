@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./game.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 interface Message {
   value: string;
@@ -24,6 +25,7 @@ const Game = () => {
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
   const [showQuestion, setShowQuestion] = useState(true);
   const [lastQuestion, setLastQuestion] = useState<any>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("Connecting to WebSocket");
@@ -89,6 +91,7 @@ const Game = () => {
         }
         case "gameOver": {
           toast.error("Game Over");
+          navigate("/leaderboard");
           break;
         }
         case "scoreSubmitted" : {

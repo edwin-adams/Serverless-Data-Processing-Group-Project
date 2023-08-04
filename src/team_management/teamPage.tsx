@@ -143,6 +143,10 @@ const TeamPage = () => {
     navigate("/exploreGame");
   };
 
+  const handleLeaderboardNavigation = () => {
+    navigate("/leaderboard");
+  };
+
   useEffect(() => {
     localStorage.setItem("team_id", "");
     localStorage.setItem("team_id", teamId);
@@ -288,6 +292,9 @@ const TeamPage = () => {
           <LeaderBoard />
           <Button type="primary" onClick={handleNavigation}>
             Explore Games
+          </Button>
+          <Button type="primary" onClick={handleLeaderboardNavigation}>
+            Leaderboard
           </Button>
         </div>
       </div>
