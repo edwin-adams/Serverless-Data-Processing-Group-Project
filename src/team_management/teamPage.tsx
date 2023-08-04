@@ -140,7 +140,7 @@ const TeamPage = () => {
   };
 
   const handleNavigation = () => {
-    navigate("/games");
+    navigate("/exploreGame");
   };
 
   useEffect(() => {
