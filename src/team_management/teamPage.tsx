@@ -18,6 +18,7 @@ const TeamPage = () => {
   console.log(loggedInEmail);
   const navigate = useNavigate();
 
+  //interface for storing team data
   interface TeamData {
     inviteId: string;
     teamName: string;
@@ -30,12 +31,14 @@ const TeamPage = () => {
     isAdmin?: boolean;
   }
 
+  //interface for storing user data
   interface User {
     email: string;
     last_name: string;
     first_name: string;
   }
 
+  //call to get all team members details
   const getTeamDetails = async () => {
     const loggedInEmail = JSON.parse(localStorage.getItem("user")).email;
 
@@ -65,6 +68,7 @@ const TeamPage = () => {
     getAllUsers();
   };
 
+  //call to get all users
   const getAllUsers = async () => {
     try {
       const response = await fetch(
@@ -82,6 +86,7 @@ const TeamPage = () => {
     } catch (e) {}
   };
 
+  //call to promote the user - only by team creater
   const promoteUser = async (additionalArg) => {
     try {
       const response = await fetch(
@@ -102,6 +107,7 @@ const TeamPage = () => {
     } catch (e) {}
   };
 
+  //call to delete or remove user
   const deleteRemoveUser = async (additionalArg) => {
     try {
       const response = await fetch(

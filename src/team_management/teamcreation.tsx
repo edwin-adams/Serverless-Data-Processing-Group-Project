@@ -3,13 +3,13 @@ import "firebase/auth";
 import { Button, Modal, Select, Space, Card } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./acceptInvite.css";
-
+//interface for the user
 interface User {
   email: string;
   last_name: string;
   first_name: string;
 }
-
+//interface for the team
 interface Team {
   declined: boolean;
   email: string;
@@ -23,13 +23,10 @@ interface Team {
 const { Option } = Select;
 
 const Dashboard = () => {
-  // localStorage.setItem("loggedInEmail", "sharshil1299@gmail.com");
-  // localStorage.setItem("loggedInName", "Harshil Shah");
   let isPartOfTeam = false;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [teamName, setTeamName] = useState(null);
-  // const [teamName, setTeamName] = useState("The jugglers");
   const [users, setUsers] = useState<User[]>([]);
   const [subscribedUsers, setSubsribedUsers] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -40,6 +37,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
+  //call to generate dynamic name
   const generateTeamName = async () => {
     try {
       const response = await fetch(
@@ -62,6 +60,7 @@ const Dashboard = () => {
     } catch (e) {}
   };
 
+  //call to get subscribed users list from sns
   const getSubscribedUsers = async () => {
     try {
       const response = await fetch(
@@ -80,6 +79,7 @@ const Dashboard = () => {
     } catch (e) {}
   };
 
+  //call to get all the users of the system
   const getAllUsers = async () => {
     try {
       const response = await fetch(
@@ -98,6 +98,7 @@ const Dashboard = () => {
     } catch (e) {}
   };
 
+  //call to send invitations to the user
   const sendInvite = async () => {
     // const senderName = localStorage.getItem("loggedInName");
     const senderName = loggedInuser?.first_name + loggedInuser?.last_name;
@@ -123,6 +124,7 @@ const Dashboard = () => {
     getAllUsers();
   };
 
+  //call to get my all teams
   const getYourTeams = async () => {
     const loggedInEmail = JSON.parse(localStorage.getItem("user")).email;
 

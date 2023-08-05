@@ -1,3 +1,4 @@
+//this shows the leaderboard.
 import React, { useState, useEffect } from "react";
 import "firebase/auth";
 import { Button, Modal } from "antd";
@@ -25,7 +26,7 @@ const Leaderboard = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-
+  //call to get all the users in the system
   const getAllUsers = async () => {
     try {
       const response = await fetch(
@@ -42,7 +43,7 @@ const Leaderboard = () => {
       setUsers(res.body);
     } catch (e) {}
   };
-
+  //mapping to data of the score with the user
   const getDataByEachUser = () => {
     const userEntries = {};
     scoreData?.forEach((item) => {
@@ -52,7 +53,7 @@ const Leaderboard = () => {
     console.log(userEntries);
     return userEntries;
   };
-
+  //call to get team stats data
   const getTeamGameData = async () => {
     try {
       const response = await fetch(
@@ -90,7 +91,7 @@ const Leaderboard = () => {
       emailToUserData[user.email] = user;
     });
   }
-
+  //mapping user id with email
   const newUsers = Array.from(
     new Set(scoreData?.map((entry) => entry.user_id))
   );
@@ -104,7 +105,7 @@ const Leaderboard = () => {
     }
     return count;
   }
-
+  //mapping name with email
   const UserStats = ({ data, users, userData }) => {
     const emailToNameMapping = {};
     userData.forEach((user) => {
