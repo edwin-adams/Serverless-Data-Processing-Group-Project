@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Button, Alert, AlertIcon, Grid } from '@chakra-ui/react';
+import { Box, Text, Button, Alert, AlertIcon, Grid, List, ListItem } from '@chakra-ui/react';
 import axios from 'axios';
 
 export default function TriviaList({ questions, onEdit }) {
@@ -36,7 +36,14 @@ export default function TriviaList({ questions, onEdit }) {
               <Text mb={4}>Difficulty Level: {question.DifficultyLevel}</Text>
               <Text mb={4}>Content: {question.Content}</Text>
               <Text mb={4}>Points: {question.Points}</Text> {/* Displaying the points */}
-
+              <Text mb={4}>Options:</Text>
+              <List styleType="disc" mb={4}>
+                {question.Options.map((option, index) => (
+                  <ListItem key={index} color={index === question.AnswerIndex ? "green.500" : "black"}>
+                    {option} {index === question.AnswerIndex && "(Answer)"}
+                  </ListItem>
+                ))}
+              </List>
               <Button colorScheme="red" onClick={() => onDelete(question.id)}>
                 Delete
               </Button>

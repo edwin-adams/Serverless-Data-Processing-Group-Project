@@ -44,15 +44,16 @@ const TriviaQuestionDialog = ({ isOpen, onClose, isEditing, editingQuestion }) =
       : 'https://tunjietnw4.execute-api.us-east-1.amazonaws.com/questions';
   
     const method = isEditing ? 'PUT' : 'POST';
-  
+    
+    const requestData = method === 'POST' ? [questionData] : questionData;
     axios({
       method: method,
       url: url,
-      data: questionData,
+      data: requestData,
     })
       .then(response => {
         console.log(response.data);
-        // Reload the page after successful request
+        // reload the page after successful request
         window.location.reload();
       })
       .catch(error => {
