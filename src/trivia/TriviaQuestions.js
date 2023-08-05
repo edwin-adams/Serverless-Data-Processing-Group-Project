@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import TriviaList from './TriviaList';
 import TriviaSearch from './TriviaSearch';
+import TriviaQuestionDialog from './TriviaQuestionDialog';
+import CreateQuestionButton from './CreateQuestionButton';
+
 
 import axios from 'axios';
 
@@ -9,6 +12,7 @@ export default function TriviaQuestionsPage() {
   const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     axios
@@ -50,6 +54,50 @@ export default function TriviaQuestionsPage() {
     console.log("search result", searchResult);
     setFilteredQuestions(searchResult);
   };
+  //open dialog
+  const handleClickOpen = () => {
+    setIsDialogOpen(true);
+  };
+
+  // const handleEditClick = (question) => {
+  //   setCurrentQuestion(question);
+  //   setDialogOpen(true);
+  //   setIsEditing(true);
+  // };
+
+  const handleClose = () => {
+    setIsDialogOpen(false); // <-- Function to close dialog
+  };
+
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleClickEdit = (question) => {
+    setSelectedQuestion(question);
+    setIsDialogOpen(true);
+    setIsEditing(true);
+  };
+
+  const handleSaveQuestion = (updatedQuestion) => {
+    const url = isEditing
+      ? `https://your-api.com/editQuestion/${selectedQuestion.id}`
+      : `https://your-api.com/createQuestion`;
+
+    const httpMethod = isEditing ? "put" : "post";
+
+    axios[httpMethod](url, updatedQuestion)
+      .then((response) => {
+        console.log(
+          isEditing ? "Question updated successfully!" : "Question created successfully!",
+          response
+        );
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error sending form data:", error);
+      });
+  };
+
 
   if (isLoading) {
     return <div>Loading...</div> // Or replace with a loading spinner
@@ -57,8 +105,18 @@ export default function TriviaQuestionsPage() {
 
   return (
     <div>
+      <CreateQuestionButton handleClickOpen={handleClickOpen} />
       <TriviaSearch onSearch={handleSearch} />
-      <TriviaList questions={ searchTerm == "" ? questions : filteredQuestions } /> 
+      <TriviaList questions={ searchTerm == "" ? questions : filteredQuestions } 
+        onEdit={handleClickEdit}
+      /> 
+      <TriviaQuestionDialog
+        isOpen={isDialogOpen}
+        onClose={handleClose}
+        editingQuestion={selectedQuestion}
+        onSave={handleSaveQuestion}
+        isEditing={isEditing}
+      />
     </div>
   );
 };

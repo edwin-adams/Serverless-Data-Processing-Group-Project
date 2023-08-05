@@ -1,8 +1,9 @@
 import React from 'react';
 import { Box, Text, Button, List, ListItem, Alert, AlertIcon, Grid } from '@chakra-ui/react';
 import axios from 'axios';
+import EditQuestionButton from './EditQuestionButton';
 
-export default function TriviaList({ questions }) {
+export default function TriviaList({ questions, onEdit }) {
   console.log("Received Questions: ", questions)
   
   const onDelete = (questionId) => {
@@ -53,6 +54,7 @@ export default function TriviaList({ questions }) {
               <Button colorScheme="red" onClick={() => onDelete(question.id)}>
                 Delete
               </Button>
+              <EditQuestionButton onEdit={() => onEdit(question)} />
             </Box>
           ))}
         </Grid>
