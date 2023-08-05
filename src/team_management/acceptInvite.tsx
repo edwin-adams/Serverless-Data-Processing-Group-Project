@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 const AcceptInvite = () => {
   const { teamName, sender, subscribee, uuid } = useParams();
   const navigate = useNavigate();
-
+  //this the acceptInvite API Call
   const acceptInvite = async () => {
     const response = await fetch(
       "https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/inviteResponse",
@@ -23,9 +23,9 @@ const AcceptInvite = () => {
     );
     const res = await response.json();
     console.log(res);
-    navigate("/accepted");
+    navigate("/accepted"); //this will redirect to the accepted path
   };
-
+  //this is the reject invite API call
   const rejectInvite = async () => {
     const response = await fetch(
       "https://r7h6msp1f2.execute-api.us-east-1.amazonaws.com/1/inviteResponse",
@@ -42,7 +42,7 @@ const AcceptInvite = () => {
     );
     const res = await response.json();
     console.log(res);
-    navigate("/rejected");
+    navigate("/rejected"); // this will navigate to the rejected path
   };
   const handleAccept = () => {
     acceptInvite();

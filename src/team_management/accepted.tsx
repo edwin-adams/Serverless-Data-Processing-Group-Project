@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import "firebase/auth";
-import { Button, Modal, Select, Space } from "antd";
+import { useEffect } from "react";
 
 const AcceptInvite = () => {
   useEffect(() => {}, []);
@@ -9,3 +7,4 @@ const AcceptInvite = () => {
 };
 
 export default AcceptInvite;
+//this will be shown to the user when they have accepted the invite

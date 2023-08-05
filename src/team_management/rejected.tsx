@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import "firebase/auth";
-import { Button, Modal, Select, Space } from "antd";
+import { useEffect } from "react";
 
 const RejectInvite = () => {
   useEffect(() => {}, []);
@@ -9,3 +7,4 @@ const RejectInvite = () => {
 };
 
 export default RejectInvite;
+//this will be called when the user rejects the invite

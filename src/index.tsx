@@ -5,6 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";
 import Kommunicate from "@kommunicate/kommunicate-chatbot-plugin";
 
+//this will integrate the aws lex bot with the frontend application
 Kommunicate.init("6cc61b66203b8085147ad5c4b6be383", {
   automaticChatOpenOnNavigation: true,
   popupWidget: true,
@@ -16,9 +17,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   // <React.StrictMode>
-    <ChakraProvider>
-      <App />
-    </ChakraProvider>
+  <ChakraProvider>
+    <App />
+  </ChakraProvider>
   // {/* </React.StrictMode> */}
 );
 
