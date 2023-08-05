@@ -15,6 +15,7 @@ const Accepted = lazy(() => import("./team_management/accepted"));
 const RejectInvite = lazy(() => import("./team_management/rejected"));
 const AcceptInvite = lazy(() => import("./team_management/acceptInvite"));
 const TeamDashboard = lazy(() => import("./team_management/teamcreation"));
+const Trivia = lazy(() => import("./trivia/TriviaQuestions"));
 const QuestionTagging = lazy(
   () => import("./question-tagging/QuestionTagging")
 );
@@ -43,6 +44,7 @@ const AppRouter = () => {
           <Route path="/team/:teamId" Component={TeamPage} />{" "}
           <Route path="/lobby" Component={Lobby} />
           <Route path="/tagQuestion" Component={QuestionTagging} />
+          <Route path="/trivia" Component={Trivia} />
         </Routes>
       </Suspense>
     </Router>
