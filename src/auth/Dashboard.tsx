@@ -55,7 +55,7 @@ const Dashboard = () => {
         setImageUrl(loggedUser.image_url);
 
         const GET_mohituserdata =
-            "https://jypdhmskqa.execute-api.ca-central-1.amazonaws.com/Prod/getScore?userId=" + loggedUser.user_id;
+            "https://jypdhmskqa.execute-api.ca-central-1.amazonaws.com/Prod/getScore?userId=" + loggedUser.email;
 
         fetchData(GET_mohituserdata).then((res) => {
             console.log(res);

@@ -1,25 +1,28 @@
-FROM node:current-alpine3.17 as builder
+# Use a lightweight Node.js image as the base image
+FROM node:14-slim
 
-WORKDIR /usr/src/app
+# Set the working directory inside the container
+WORKDIR /app
 
-COPY package.json .
+# Copy the package.json and package-lock.json files to the container's working directory
+COPY package.json ./
 
-COPY package-lock.json .
+# Install dependencies
+RUN npm i
 
-RUN npm install
+# Copy the rest of the application code to the container's working directory
+COPY src ./src
+COPY public ./public
+COPY tsconfig.json ./
 
-COPY . .
-
-EXPOSE 80
-
+# Build the React app
 RUN npm run build
 
-FROM nginx
+# Remove unnecessary node_modules (if needed)
+RUN rm -rf node_modules
 
-WORKDIR /usr/share/nginx/html
+# Install serve globally
+RUN npm i -g serve
 
-RUN rm -rf ./*
-
-COPY --from=builder /usr/src/app/build .
-
-ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
+# Set the command to start the server
+CMD ["serve", "-s", "build"]
