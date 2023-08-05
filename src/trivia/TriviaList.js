@@ -1,11 +1,10 @@
 import React from 'react';
-import { Box, Text, Button, List, ListItem, Alert, AlertIcon, Grid } from '@chakra-ui/react';
+import { Box, Text, Button, Alert, AlertIcon, Grid } from '@chakra-ui/react';
 import axios from 'axios';
-import EditQuestionButton from './EditQuestionButton';
 
 export default function TriviaList({ questions, onEdit }) {
-  console.log("Received Questions: ", questions)
-  
+  console.log("Received Questions: ", questions);
+
   const onDelete = (questionId) => {
     console.log("Deleting question with ID:", questionId);
     const isConfirmed = window.confirm('Are you sure you want to delete this question?');
@@ -32,29 +31,18 @@ export default function TriviaList({ questions, onEdit }) {
           {questions.map((question) => (
             <Box key={question.id} p={5} shadow="md" borderWidth="1px">
               <Text fontSize="xl" mb={4}>
-                Question: {question.Content}
+                Category: {question.Category}
               </Text>
               <Text mb={4}>Difficulty Level: {question.DifficultyLevel}</Text>
-              <Text mb={4}>Category: {question.Category}</Text>
-              <Text mb={4}>Points: {question.Points}</Text>
+              <Text mb={4}>Content: {question.Content}</Text>
+              <Text mb={4}>Points: {question.Points}</Text> {/* Displaying the points */}
 
-              <List spacing={3}>
-                {question.Options.map((option, optionIndex) => (
-                  <ListItem
-                    key={optionIndex}
-                    color={optionIndex === question.AnswerIndex ? 'green.500' : 'black'}
-                  >
-                    {option}
-                    {optionIndex === question.AnswerIndex ? (
-                      <Text as="span" color="green.500"> (Correct Answer)</Text>
-                    ) : null}
-                  </ListItem>
-                ))}
-              </List>
               <Button colorScheme="red" onClick={() => onDelete(question.id)}>
                 Delete
               </Button>
-              <EditQuestionButton onEdit={() => onEdit(question)} />
+              <Button colorScheme="blue" onClick={() => onEdit(question)}>
+                Edit
+              </Button>
             </Box>
           ))}
         </Grid>

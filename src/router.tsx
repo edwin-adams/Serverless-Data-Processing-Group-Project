@@ -16,6 +16,7 @@ const RejectInvite = lazy(() => import("./team_management/rejected"));
 const AcceptInvite = lazy(() => import("./team_management/acceptInvite"));
 const TeamDashboard = lazy(() => import("./team_management/teamcreation"));
 const Trivia = lazy(() => import("./trivia/TriviaQuestions"));
+const TriviaGames = lazy(() => import("./trivia_games/TriviaGames"));
 const QuestionTagging = lazy(
   () => import("./question-tagging/QuestionTagging")
 );
@@ -45,6 +46,7 @@ const AppRouter = () => {
           <Route path="/lobby" Component={Lobby} />
           <Route path="/tagQuestion" Component={QuestionTagging} />
           <Route path="/trivia" Component={Trivia} />
+          <Route path="/triviagames" Component={TriviaGames} />
         </Routes>
       </Suspense>
     </Router>

@@ -66,7 +66,9 @@ export default function TriviaQuestionsPage() {
   // };
 
   const handleClose = () => {
-    setIsDialogOpen(false); // <-- Function to close dialog
+    setIsDialogOpen(false);
+    setIsEditing(false);
+    setIsDialogOpen(false);
   };
 
   const [selectedQuestion, setSelectedQuestion] = useState(null);
@@ -78,25 +80,25 @@ export default function TriviaQuestionsPage() {
     setIsEditing(true);
   };
 
-  const handleSaveQuestion = (updatedQuestion) => {
-    const url = isEditing
-      ? `https://your-api.com/editQuestion/${selectedQuestion.id}`
-      : `https://your-api.com/createQuestion`;
+  // const handleSaveQuestion = (updatedQuestion) => {
+  //   const url = isEditing
+  //     ? `https://your-api.com/editQuestion/${selectedQuestion.id}`
+  //     : `https://your-api.com/createQuestion`;
 
-    const httpMethod = isEditing ? "put" : "post";
+  //   const httpMethod = isEditing ? "put" : "post";
 
-    axios[httpMethod](url, updatedQuestion)
-      .then((response) => {
-        console.log(
-          isEditing ? "Question updated successfully!" : "Question created successfully!",
-          response
-        );
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error("Error sending form data:", error);
-      });
-  };
+  //   axios[httpMethod](url, updatedQuestion)
+  //     .then((response) => {
+  //       console.log(
+  //         isEditing ? "Question updated successfully!" : "Question created successfully!",
+  //         response
+  //       );
+  //       window.location.reload();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error sending form data:", error);
+  //     });
+  // };
 
 
   if (isLoading) {
@@ -114,7 +116,7 @@ export default function TriviaQuestionsPage() {
         isOpen={isDialogOpen}
         onClose={handleClose}
         editingQuestion={selectedQuestion}
-        onSave={handleSaveQuestion}
+        // onSave={handleSaveQuestion}
         isEditing={isEditing}
       />
     </div>

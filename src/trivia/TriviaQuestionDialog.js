@@ -9,7 +9,9 @@ const TriviaQuestionDialog = ({ isOpen, onClose, isEditing, editingQuestion }) =
     Category: "",
     Content: "",
     DifficultyLevel: "",
-    AnswerIndex: ""
+    AnswerIndex: "",
+    Points: 0, 
+    Hint: "" 
   };
   const [currentQuestion, setCurrentQuestion] = useState(initialState);
   const [optionsString, setOptionsString] = useState("");
@@ -138,6 +140,28 @@ const TriviaQuestionDialog = ({ isOpen, onClose, isEditing, editingQuestion }) =
                 value={optionsString}
                 onChange={(e) => setOptionsString(e.target.value)}
                 placeholder="Options (separate by commas)"
+                mb={3}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Points</FormLabel>
+              <NumberInput
+                name="Points"
+                value={currentQuestion.Points}
+                onChange={(valueString) => setCurrentQuestion({ ...currentQuestion, Points: parseInt(valueString) })}
+                placeholder="Points"
+                mb={3}
+              >
+                <NumberInputField />
+              </NumberInput>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Hint</FormLabel>
+              <Input
+                name="Hint"
+                value={currentQuestion.Hint}
+                onChange={(e) => setCurrentQuestion({ ...currentQuestion, Hint: e.target.value })}
+                placeholder="Hint"
                 mb={3}
               />
             </FormControl>
