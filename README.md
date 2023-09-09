@@ -1,63 +1,37 @@
-# Getting Started with Create React App
+# Multi-Cloud Serverless Collaborative Trivia Challenge Game
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This group project was developed as the final project for the CSCI 5410 - Serverless Data Processing Course. The scope of the project was to develop a multi-cloud serverless online trivia game that allows users to form teams, compete against other 
+teams in real-time, and track their progress on global and category-specific leaderboards. The project comprised of 10 features, see project specification, of which I developed features seven and eight.
 
-## Available Scripts
+## Feature 7 - Trivia Content Management
 
-In the project directory, you can run:
+• Add, edit, and delete trivia questions, including category and difficulty level
+• Create and manage trivia games with custom settings (e.g., categories, difficulty levels, and time frames)
+• Monitor and analyze gameplay data and user engagement
 
-### `npm start`
+The CRUD operations of this feature were implemented using AWS DynamoDB, AWS Lambda Functions, AWS Simple Notification Service (SNS) and Google Looker Studio for Analytics. Admin user's are able to create new questions for trivia questions of any of our predetermined categories, or add new categories. Questions are available in three difficulties: easy, medium and hard and carry a points value of 10, 20 and 30 points respectively. Trivia Games are created by selecting an array of questions from the trivia questions table, as well as specific parameters for the game, such as time limit and number of questions, and then written to the trivia games DynamoDB table.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Feature 8 - Notifications and Alerts
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+• Receive notifications for game invites, team updates, and new trivia game availability //This is not an 
+additional task, it is also mentioned in other tasks. 
+• Get alerts for achievements unlocked and leaderboard rank changes
 
-### `npm test`
+This feature was implemented using AWS DynamoDB, AWS Lambda Functions and AWS SNS. Notifications for administrators and for players were divided into two separate SNS topics. Players were subscribed to the player SNS Topic at registration after their email address was collected. Once registered, the user's email is passed to the player SNS Topic and then persisted in a DynamoDB Table. The emails were stored because each user needs to be consent to the subscription in their email inbox before they can receive the notifications from the AWS platform, else each notification would trigger the initial authrozation prompt.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Similarly for administrators, emails were subscribed to the admin SNS topic Manually to receive notifications for actions such as trivia question and game additions, deletions and edits. Administrative emails were persisted in a separate DynamoDB table.
 
-### `npm run build`
+### Feature Architecture
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![image](https://github.com/edwin-adams/Serverless-Data-Processing-Group-Project/assets/78889111/b17cee1a-5771-4960-9621-be71bdba40d6)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Documentation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Please refer to the project documentation "Group 25 Trivia Game Documentation" for further details on how the entire project was implemented. The specifications for the project can be found in "Project_Specification_Version1.0.1-CSCI 5410"
 
 
-## Dependancy
-
-`npm install firebase`
-
-`npm i @chakra-ui/react @emotion/react @emotion/styled framer-motion`
-
-`npm install react-router-dom`
-
-`npm install firebaseui --save`
-
-`npm install firebase react-firebase-hooks`
-
-
-## Reference
-https://firebase.google.com/docs/auth/web/start
+## References
+- [Build a CRUD API with Lambda and Dynamo DB](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-dynamo-db.html)
+- [Boto3 1.28.44 documentation - Dynamo DB](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb.html)
+- [How To Put/Get Items From DynamoDB Table Using AWS Lambda (Boto3)](https://dev.classmethod.jp/articles/how-to-put-get-items-from-dynamodb-table-using-aws-lambda-boto3/)
+- [CRUD OPERATIONS FOR AWS DynamoDB USING PYTHON BOTO3 SCRIPT](https://dheeraj3choudhary.com/crud-operations-for-aws-dynamodb-using-python-boto3-script)
