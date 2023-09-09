@@ -29,6 +29,10 @@ Similarly for administrators, emails were subscribed to the admin SNS topic Manu
 
 Please refer to the project documentation "Group 25 Trivia Game Documentation" for further details on how the entire project was implemented. The specifications for the project can be found in "Project_Specification_Version1.0.1-CSCI 5410"
 
+## My Code Contributions
+- [Backend Lambda Functions](https://github.com/edwin-adams/Serverless-Data-Processing-Group-Project/tree/master/backend/edwin_code)
+- [Frontend - Trivia Questions](https://github.com/edwin-adams/Serverless-Data-Processing-Group-Project/tree/master/frontend/src/trivia)
+- [Frontend - Trivia Games](https://github.com/edwin-adams/Serverless-Data-Processing-Group-Project/tree/master/frontend/src/trivia_games)
 
 ## References
 - [Build a CRUD API with Lambda and Dynamo DB](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-dynamo-db.html)
